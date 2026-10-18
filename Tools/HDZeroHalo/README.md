@@ -20,6 +20,13 @@ development branch without touching vehicle code.
 | `WP1A_DRIVER_COMPATIBILITY.md` | Existing driver coverage |
 | `WP1A_BLOCKERS.md` | HARD/SOFT gates before flash |
 | `WP1A_FINAL_REPORT.md` | WP1A status block + readiness |
+| `WP1B_BUILD_REPORT.md` | Configure / Copter / bootloader results |
+| `WP1B_DSHOT_DMA.md` | DMA generator evidence |
+| `WP1B_MEMORY_LAYOUT.md` | Provisional flash / param layout |
+| `WP1B_INDEPENDENT_REVIEW.md` | Review findings + fixes |
+| `WP1B_FINAL_REPORT.md` | WP1B status block + readiness |
+
+**WP1B board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.
 
 ## Outside Git (project root)
 

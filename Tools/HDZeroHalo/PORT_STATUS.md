@@ -35,10 +35,28 @@ Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) an
 | Bootloader layout | UNKNOWN | 128 vs 384 KB |
 | External GPS / mag / baro | NEEDS_CONFIG | Pads + I2C1 |
 | ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code |
-| Halo hwdef in tree | UNKNOWN | Not implemented (WP1B+) |
-| Prior ArduPilot Halo port | — | **None upstream**; unofficial [dogjutsu PR#2](https://github.com/dogjutsu/ardupilot/pull/2) only — see `WP1A_HARDWARE_AUDIT.md` |
+| Halo hwdef in tree | NEEDS_CONFIG → **present** | `hwdef/HDZeroHalo/` (WP1B offline build PASS) |
+| Prior ArduPilot Halo port | — | **None upstream**; unofficial [dogjutsu PR#2](https://github.com/dogjutsu/ardupilot/pull/2) only |
+| Halo on-hardware flight | UNKNOWN | **HARDWARE_FLASH_ALLOWED = NO** |
 
-Detail: `WP1A_*.md` in this directory.
+Detail: `WP1A_*.md`, `WP1B_*.md` in this directory.
+
+---
+
+## WP1B update (2026-10-18)
+
+Offline first board port. Oscillator and flash layout remain UNKNOWN.
+
+| Feature | Status | WP1B notes |
+|---------|--------|------------|
+| Board `HDZeroHalo` | built offline | configure + copter PASS |
+| Bootloader | built offline | load @ 128 KB provisional |
+| Dual IMU SKU probe | compiled | ICM+MPU on PB4 & PB3 |
+| DShot300 default | configured | `MOT_PWM_TYPE 5`; TIM3 DMA |
+| DShot600 / bdshot | path ready | `HAL_WITH_BIDIR_DSHOT`; not TESTED |
+| ELRS / MSP DP / W25Q128 | configured | UART1 / UART5 / SPI2 |
+| PE3 9V | GPIO LOW | no RELAY auto-on |
+| Oscillator / flash-to-BF | UNKNOWN | **DO NOT FLASH** |
 
 ---
 
