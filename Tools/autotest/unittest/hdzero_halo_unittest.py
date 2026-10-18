@@ -45,6 +45,18 @@ class HaloConfigurationTest(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             return subprocess.run([str(binary)], capture_output=True, text=True)
 
+    def test_software_dfu_disabled_without_startup_hook(self):
+        for configuration in self.outputs:
+            with self.subTest(configuration=configuration):
+                program = '''
+#include "hwdef.h"
+#if HAL_ENABLE_DFU_BOOT
+#error "Halo must not advertise software DFU without startup hook support"
+#endif
+int main() { return 0; }
+'''
+                self.assertEqual(self.compile_and_run(configuration, program).returncode, 0)
+
     def test_initial_output_levels(self):
         for configuration in self.outputs:
             with self.subTest(configuration=configuration):

@@ -84,7 +84,8 @@ Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) an
 | Status LED PE2 | NEEDS_CONFIG | See current hwdef |
 | LED strip PA10 | NEEDS_CONFIG | TIM1 CH3; prefer NODMA w/ bdshot |
 | Switchable 9V PE3 | NEEDS_CONFIG | HDZ `PINIO 1 E03` |
-| USB DFU / MAVLink | SUPPORTED / NEEDS_CONFIG | Vendor DFU procedure documented |
+| USB ROM DFU | UNKNOWN | Physical BOOT procedure documented, untested; software entry disabled (WP2B-H) |
+| USB MAVLink | NEEDS_CONFIG | Separate from ROM DFU |
 | Bootloader layout | UNKNOWN | 128 vs 384 KB |
 | External GPS / mag / baro | NEEDS_CONFIG | Pads + I2C1 |
 | ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code |
