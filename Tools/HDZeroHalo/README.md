@@ -7,7 +7,7 @@ development branch without touching vehicle code.
 ## Document index (in Git)
 
 | File | Purpose |
-|------|---------|
+| ------ | --------- |
 | `PROJECT_SCOPE.md` | Definitive goals, non-goals, status taxonomy |
 | `HARDWARE_REQUIREMENTS.md` | Target hardware capabilities and evidence status |
 | `PORT_STATUS.md` | Feature matrix (SUPPORTED / NEEDS_CONFIG / …) |
@@ -31,6 +31,8 @@ development branch without touching vehicle code.
 | `WP2A_PE3_POLARITY.md` | 9V PINIO polarity inference |
 | `WP2A_IMU_VBAT.md` | Dual-SKU IMU + battery scales |
 | `WP2A_FINAL_REPORT.md` | WP2A status block + blockers |
+| `WP2A_BAROMETER.md` | External barometer defaults, retained prearm checks and USB recovery |
+| `WP2A_REVIEW_FIX_REPORT.md` | Nine review findings, changes, offline validation and remaining hardware blockers |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
 **WP2A:** `HARDWARE_FLASH_ALLOWED = NO`.
@@ -40,7 +42,7 @@ development branch without touching vehicle code.
 Path: `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/`
 
 | Path | Purpose |
-|------|---------|
+| ------ | --------- |
 | `docs/` | Working notes / mirrors not required in the ArduPilot fork |
 | `evidence/` | Build logs, size reports, screenshots — keep out of Git |
 

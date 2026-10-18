@@ -7,7 +7,7 @@
 ## Verdict
 
 | Field | Value |
-|-------|-------|
+| ------- | ------- |
 | `TIM3_DMA_REVIEW` | **PASS (code/configure)** — shared stream is intentional for H7 bdshot |
 | Hardware eRPM quality | UNKNOWN |
 
@@ -34,10 +34,28 @@ ArduPilot bidirectional DShot on ChibiOS uses timer DMAR for the burst, then inp
 
 `DMA_NOSHARE TIM3*` prevents other peripherals from stealing that stream; LED strip is `NODMA` on TIM1.
 
+## Addressable LED limitation (review correction)
+
+NODMA does not provide a slower LED implementation. `RCOutput.cpp:933-938`
+requires UP-DMA for serial LEDs; `:1225-1227` falls back to ordinary PWM without
+it. Addressable LEDs on PA10 are **DEFERRED_WITH_REASON / unsupported**.
+
+The current map uses all16 DMA1/2 streams. TIM1 could only be added by changing
+peripheral allocation/sharing. The resolver permits TIM_UP/UART_TX sharing, but
+this would introduce contention and requires driver/latency qualification under
+concurrent LED, serial and motor loads. No such performance evidence exists.
+Keep exclusive TIM3/SPI allocation and all existing UART DMA assignments;
+no new LED capability is claimed. This does not change the static motor result.
+
+For four active motors, bidirectional DShot requires a mask covering all four
+active TIM3 channels (normally `SERVO_BLH_BDMASK=15`), not just the two channels
+marked BIDIR in hwdef. Capture rotates between motors. No parameter was changed
+on hardware and no ESC transaction was performed.
+
 ## Motor pin / BIDIR map (hwdef)
 
 | Motor | Pin | Timer ch | BIDIR in hwdef |
-|-------|-----|----------|----------------|
+| ------- | ----- | ---------- | ---------------- |
 | M1 | PC6 | TIM3_CH1 | yes |
 | M2 | PC7 | TIM3_CH2 | no |
 | M3 | PC8 | TIM3_CH3 | yes |
@@ -48,7 +66,7 @@ Matches Anyleaf-style “twin BIDIR” (CH1+CH3 capture pair).
 ## Residual risk (not blockers for offline)
 
 | Risk | Notes |
-|------|-------|
+| ------ | ------- |
 | Configure conflict | None observed for TIM3/SPI |
 | Runtime bdshot | Needs AM32 unloaded bench; not done |
 | Wrong HSE | Would invalidate DShot bit timing even if DMA map is correct |

@@ -6,7 +6,7 @@
 ## MCU
 
 | Item | Status | Notes |
-|------|--------|-------|
+| ------ | -------- | ------- |
 | Family | STM32H743 | BF `FC_TARGET_MCU STM32H743`; HDZ “STM32H743 (480MHz)” |
 | Exact orderable part / package | **UNKNOWN** | Verify marking / BOM |
 | ArduPilot MCU token | `MCU STM32H7xx STM32H743xx` | All compared H743 boards |
@@ -15,12 +15,12 @@
 ## Oscillator — UNKNOWN (blocking for correct flash)
 
 | Source | Finding |
-|--------|---------|
+| -------- | --------- |
 | HDZero docs | No crystal frequency published |
 | Betaflight `HDZERO_HALO/config.h` | No `HSE_VALUE` / `SYSTEM_HSE_MHZ` override |
 | Betaflight STM32H7 HAL default | `HSE_VALUE (25000000UL)` in `stm32h7xx_hal_conf.h` — **platform default, not board proof** |
 | ArduPilot peer boards | Usually `OSCILLATOR_HZ 8000000`; **AnyleafH7 uses 16000000** (`common.inc` L8) |
-| dogjutsu fork `HDZERO_HALO` | Sets 8 MHz claiming BF does — **incorrect claim**; ignore for HSE |
+| BF Makefile/compiler defaults (review correction) | Normal BF4.5.1 uses HSE8 despite no board override; physical source remains unverified; see `WP2A_HSE.md` |
 
 **Verification plan (required before trusting clocks on hardware):**
 
@@ -34,7 +34,7 @@ Until then WP1B may use a **provisional** value only for **compile experiments**
 ## Internal flash / parameter storage
 
 | Item | Typical H743 ArduPilot | Halo |
-|------|------------------------|------|
+| ------ | ------------------------ | ------ |
 | `FLASH_SIZE_KB` | 2048 | **NEEDS_CONFIG** (assume 2048 pending package confirm) |
 | `FLASH_RESERVE_START_KB` | **128** (Lucid/Matek/Anyleaf) or **384** (many FPV: GEPRC/Foxeer/TMotor) | **UNKNOWN** |
 | `STORAGE_FLASH_PAGE` | 14 (with 128 KB BL) or 1 (with 384 KB BL patterns) | **UNKNOWN** — must match reserve |
@@ -50,7 +50,7 @@ Until then WP1B may use a **provisional** value only for **compile experiments**
 ## Board ID
 
 | Item | Status |
-|------|--------|
+| ------ | -------- |
 | Existing `AP_HW_*` for Halo | **None** in `Tools/AP_Bootloader/board_types.txt` |
 | HDZero manufacturer reservation | **None** found |
 | Action for WP1B | Open small PR / local reservation for a unique ID (porting guide Step 1); do not reuse another board’s ID |
@@ -58,7 +58,7 @@ Until then WP1B may use a **provisional** value only for **compile experiments**
 ## USB DFU
 
 | Item | Evidence | Status |
-|------|----------|--------|
+| ------ | ---------- | -------- |
 | Type-C USB | HDZ product docs | SUPPORTED (hardware) |
 | STM32 ROM DFU | HDZ `halo-firmware.md` BOOT-button DFU procedure | SUPPORTED |
 | ArduPilot `ENABLE_DFU_BOOT` | Common in `hwdef-bl.dat` (e.g. Lucid BL L56) | NEEDS_CONFIG in Halo BL |
@@ -67,7 +67,7 @@ Until then WP1B may use a **provisional** value only for **compile experiments**
 ## Safe return to Betaflight
 
 | Path | Notes | Status |
-|------|-------|--------|
+| ------ | ------- | -------- |
 | Hold **BF BOOT** + USB → STM32 DFU → flash BF `HDZERO_HALO` | Documented by HDZero (`halo-firmware.md`) | SUPPORTED procedure (vendor) |
 | ELRS BOOT button | Separate ESP32 RX recovery; not MCU BL | HDZ docs |
 | ArduPilot bootloader UART/USB | Will coexist once AP BL installed; keep DFU path documented | NEEDS_CONFIG |
@@ -82,7 +82,7 @@ Until then WP1B may use a **provisional** value only for **compile experiments**
 ## Summary statuses
 
 | Topic | Status |
-|-------|--------|
+| ------- | -------- |
 | MCU family H743 | SUPPORTED (docs) |
 | Oscillator Hz | **UNKNOWN** |
 | Flash size 2 MB | NEEDS_CONFIG (high confidence DER) |

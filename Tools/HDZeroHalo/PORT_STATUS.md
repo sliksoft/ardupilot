@@ -4,6 +4,17 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## Codex review fix update (2026-10-18)
+
+Current details and offline validation: `WP2A_REVIEW_FIX_REPORT.md`.
+Normal BF builds use HSE8; physical source is still unverified. Buzzer polarity
+is corrected in application and bootloader. MPU/ICM relative frames are aligned;
+absolute mounting remains blocked. Normal barometer checks are retained and
+external BMP280/MS5611/BMP388 probing defaults to mask1030. No-baro startup is
+USB configuration-error recovery only. PA10 addressable LEDs are unsupported
+with the retained NODMA allocation. PE3 LOW is requested after GPIO initialisation,
+not guaranteed throughout reset. All hardware operation remains unverified.
+
 ---
 
 ## WP1A update (2026-10-18)
@@ -11,7 +22,7 @@ Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) and HDZero docs replaces WP0 “pins UNKNOWN” for most I/O. Oscillator and bootloader flash layout remain **UNKNOWN**.
 
 | Feature | Status | WP1A notes |
-|---------|--------|------------|
+| --------- | -------- | ------------ |
 | STM32H743 + ChibiOS | SUPPORTED | BF + HDZ; package marking still UNKNOWN |
 | Oscillator Hz | UNKNOWN | Must measure; see `WP1A_BOOTLOADER.md` |
 | MPU6000 (SKU) | SUPPORTED / NEEDS_CONFIG | SPI1 CS PB4/PB3; Invensense |
@@ -28,7 +39,7 @@ Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) an
 | Battery ADC PC0/PC2 | NEEDS_CONFIG | CURR scale 100 (BF); VBAT scale UNKNOWN |
 | RSSI ADC PC1 | NEEDS_CONFIG | Optional |
 | Buzzer PD12 | NEEDS_CONFIG | Inverted (BF) |
-| Status LED PE2 | NEEDS_CONFIG | |
+| Status LED PE2 | NEEDS_CONFIG | See current hwdef |
 | LED strip PA10 | NEEDS_CONFIG | TIM1 CH3; prefer NODMA w/ bdshot |
 | Switchable 9V PE3 | NEEDS_CONFIG | HDZ `PINIO 1 E03` |
 | USB DFU / MAVLink | SUPPORTED / NEEDS_CONFIG | Vendor DFU procedure documented |
@@ -48,7 +59,7 @@ Detail: `WP1A_*.md`, `WP1B_*.md` in this directory.
 Offline first board port. Oscillator and flash layout remain UNKNOWN.
 
 | Feature | Status | WP1B notes |
-|---------|--------|------------|
+| --------- | -------- | ------------ |
 | Board `HDZeroHalo` | built offline | configure + copter PASS |
 | Bootloader | built offline | load @ 128 KB provisional |
 | Dual IMU SKU probe | compiled | ICM+MPU on PB4 & PB3 |
@@ -66,8 +77,8 @@ Hardware preflight from public sources + local build artifacts. **No device conn
 Detail: `WP2A_*.md`.
 
 | Feature | Status | WP2A notes |
-|---------|--------|------------|
-| HSE frequency | UNKNOWN | BF omits `SYSTEM_HSE_MHZ` → H7 HSI PLL path; not physical proof |
+| --------- | -------- | ------------ |
+| HSE frequency | PHYSICAL UNKNOWN | Normal BF build uses HSE8 via Makefile/compiler defaults; earlier HSI conclusion incorrect |
 | Flash layout vs BF | BF proven / AP provisional | BF app @ `0x08040000`; AP app @ `0x08020000` + 128 KB BL |
 | DFU recovery to BF | SUPPORTED procedure | HDZ BOOT-button DFU; not exercised |
 | TIM3 UP/CH shared DMA | PASS (code) | DMA1 Stream 0 + DMAMUX; bdshot Shared_DMA; not TESTED |
@@ -85,7 +96,7 @@ Detail: `WP2A_*.md`.
 WP0 treated Halo pins as UNKNOWN pending OEM docs. That assumption is **superseded** by WP1A for pinmap items above; oscillator/layout unknowns remain valid.
 
 | Feature | WP0 status | Notes / evidence in tree |
-|---------|------------|--------------------------|
+| --------- | ------------ | -------------------------- |
 | STM32H743 + ChibiOS | SUPPORTED | e.g. `TBS_LUCID_H7/hwdef.dat` L5 |
 | MPU6000 driver | SUPPORTED | `IMU Invensense` |
 | ICM42688P driver | SUPPORTED | `IMU Invensensev3` |

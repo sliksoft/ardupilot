@@ -5,7 +5,7 @@
 ## Severity legend
 
 | Level | Meaning |
-|-------|---------|
+| ------- | --------- |
 | **HARD** | Must resolve before flashing / flight trust |
 | **SOFT** | Can provisional-default for first compile; fix before flight |
 | **NONE** | Not blocking |
@@ -13,7 +13,7 @@
 ## Open items
 
 | ID | Item | Level | Why | Resolution |
-|----|------|-------|-----|------------|
+| ---- | ------ | ------- | ----- | ------------ |
 | B1 | `OSCILLATOR_HZ` | **HARD** | Wrong HSE → wrong clocks, UART baud, timers | Crystal marking / schematic / measure |
 | B2 | `FLASH_RESERVE_START_KB` + storage page | **HARD** | Wrong layout → brick until DFU; param loss | Inspect BF image layout; choose 128 vs 384 KB pattern |
 | B3 | Unique `APJ_BOARD_ID` | SOFT | Needed for .apj / BL | Allocate in `board_types.txt` |
@@ -35,7 +35,7 @@
 
 ## Anti-patterns (do not adopt)
 
-- dogjutsu `OSCILLATOR_HZ 8000000` justified as “BF uses 8 MHz” — BF Halo `config.h` does not set HSE
+- Treating normal BF HSE8 build defaults as physical oscillator proof; the Makefile does set HSE8 even without a Halo config override (review correction)
 - BIDIR on LED strip / buzzer pins (dogjutsu PWM5/6) for a standard Copter motor port
 - Board ID `9300` without `board_types.txt` reservation
 

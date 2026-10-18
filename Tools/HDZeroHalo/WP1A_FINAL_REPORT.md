@@ -34,12 +34,12 @@ HARDWARE_LIMITATIONS = no analog OSD; UART3/UART4 TX absent (RX-only); single IM
 UNRESOLVED_QUESTIONS = HSE Hz; BL flash reserve; VBAT scale; IMU rotation; PE3 polarity; H743 package
 ```
 
-**Addendum:** BF config blob `df3ee99d…`; content introduced `d3abecf9…` (#670); path regroup `e0273b95…`. Gyro CS SKU split from closed BF PR #835 (ICM→PB4/PC13, MPU→PB3/PA15). Reject dogjutsu 8 MHz HSE rationale.
+**Addendum:** BF config blob `df3ee99d…`; content introduced `d3abecf9…` (#670); path regroup `e0273b95…`. Gyro CS SKU split from closed BF PR #835 (ICM→PB4/PC13, MPU→PB3/PA15). Review correction: the normal BF build does default to HSE8; this is software evidence, not physical proof. See `WP2A_HSE.md`.
 
 ## Documents produced
 
 | File | Content |
-|------|---------|
+| ------ | --------- |
 | `WP1A_HARDWARE_AUDIT.md` | Sources, checklist, prior-port search |
 | `WP1A_PINMAP.md` | Full pin inventory + evidence tags |
 | `WP1A_DSHOT_DMA.md` | DShot300/600/bdshot + DMA plan |

@@ -1,50 +1,84 @@
-# WP2A_HSE — Halo MCU oscillator frequency
+# WP2A_HSE — clock-source review correction
 
 **Date:** 2026-10-18  
-**Start-HEAD:** `1abdc924450f473670f63c91e60e737a5e534ec1`  
+**Review basis:** `9e8f166ecd17c418d4070d4b6f4b92e7fee6bf8d`
 **HARDWARE_FLASH_ALLOWED = NO**
 
-## Verdict
+## Corrected conclusion
 
-| Field | Value |
-|-------|-------|
-| `HSE_FREQUENCY` | **UNKNOWN** |
-| Proven physical crystal Hz | **NO** |
-| Safe to flash with `OSCILLATOR_HZ 8000000` | **NO** |
+The earlier claim that omitting `SYSTEM_HSE_MHZ` selects HSI in the normal
+Halo Betaflight build was incorrect. It ignored the Makefile default and
+compiler definitions. Keep ArduPilot `OSCILLATOR_HZ 8000000` as the provisional
+build configuration; the physical clock source on our board remains unverified.
 
-## Evidence matrix
+## Betaflight 4.5.1 build chain
 
-| Source | What it says | Classification |
-|--------|--------------|----------------|
-| BF `HDZERO_HALO` `config.h` | **No** `#define SYSTEM_HSE_MHZ` | PROVEN (config blob) |
-| BF `config/README.md` | `SYSTEM_HSE_MHZ` required for boards with HSE crystal; omit for internal oscillator | PROVEN (docs) |
-| BF `src/main/target/common_post.h` | If undefined, `#define SYSTEM_HSE_MHZ 0` | PROVEN |
-| BF `mk/config.mk` | Sets `HSE_VALUE` only when `SYSTEM_HSE_MHZ` is present in config | PROVEN |
-| BF `system_stm32h7xx.c` | `#if !defined(HSE_VALUE)` → `PLL_SRC = HSI`, `PLL_SRC_FREQ = HSI_FREQ` (64 MHz) | PROVEN |
-| Peer H743 BF configs (Matek/Foxeer/Mamba/iFlight) | Also omit `SYSTEM_HSE_MHZ` | PROVEN (sample) |
-| HDZero Halo PDF manual / `halo-firmware.md` | No MCU crystal frequency | ABSENT |
-| Public schematic / BOM | Not found | ABSENT |
-| Hardware scope / RCC measurement | No Halo on USB this session | ABSENT |
-| dogjutsu / unofficial forks claiming 8 MHz | Non-authoritative | REJECTED as proof |
-| AP `hwdef.dat` `OSCILLATOR_HZ 8000000` | Peer H743 convention for offline compile only | **ASSUMPTION** (labelled in hwdef) |
+Pinned source: tag 4.5.1, commit
+`77d01ba3b76a22909d5f09cb0628820141f95eaa`. The official HDZero firmware guide
+identifies 4.5.1 as the factory version; this does not identify the exact image
+or build overrides installed on a particular board.
 
-## Interpretation
+| Source | Behaviour |
+| -------- | ----------- |
+| Halo config at config commit `e0273b9564854e0ee1fbadd8200875b30bd35650` | No `SYSTEM_HSE_MHZ` override |
+| `mk/config.mk:30-32` | Sets `HSE_VALUE` when the board supplies that override |
+| `Makefile:128` | Otherwise `HSE_VALUE ?= 8000000` |
+| `Makefile:195-196`, `mk/mcu/STM32H7.mk:288` | Pass `-DHSE_VALUE=8000000` in an ordinary build |
+| `src/main/startup/system_stm32h7xx.c:85-90` | Defined `HSE_VALUE` selects `RCC_PLLSOURCE_HSE` |
 
-1. **Betaflight Halo firmware does not configure an HSE crystal value.** On STM32H7, that selects the **HSI → PLL** path (`HSI_FREQ = 64 MHz`), not an 8/16/25 MHz HSE.
-2. That proves the **BF clock software path**, not the **presence or absence** of a physical HSE part on the PCB. Schematics and scope measurement are still required before trusting ArduPilot `OSCILLATOR_HZ`.
-3. ArduPilot/ChibiOS H743 boards almost always use **HSE** via `OSCILLATOR_HZ`. Wrong Hz breaks UART baud, DShot timing, and USB. The provisional `8000000` in `HDZeroHalo/hwdef.dat` remains **compile-only**.
-4. ELRS “TCXO” references (Gemini RX) are **not** the MCU HSE.
+The unselected `#if !defined(HSE_VALUE)` branch is an HSI64 fallback, not proof
+that the ordinary Halo build takes it. Defaults in `common_post.h` do not undo a
+compiler definition. A command-line or OEM build override must be evaluated
+separately. ELRS TCXO specifications do not identify the MCU clock source.
 
-## Required before flash
+## ArduPilot configuration retained
 
-- Prefer: OEM schematic / crystal marking / RCC register dump from a running BF image.  
-- Or: frequency measurement of OSC_IN / confirmed HSE pin.  
-- Until then: keep `HARDWARE_FLASH_ALLOWED = NO`.
+Application: HSE8, CPU 480 MHz; bootloader: HSE8, default H743 CPU 400 MHz.
+The bootloader and application initialise their own clock trees. Different CPU
+frequencies are supported; they must agree about the physical oscillator.
 
-## Sources (URLs / paths)
+For the application, `stm32h7_mcuconf.h` gives PLL1P 480 MHz, PLL1Q 80 MHz
+for SPI1/2/3, PLL2Q 100 MHz for UARTs/SPI4/5, PLL3Q 48 MHz for USB and PLL3R
+32 MHz for I2C. Timers derive their clocks from the configured bus tree.
+The bootloader HSE8 path also supplies nominal USB 48 MHz. Build assertions
+are retained. These are configured frequencies, not measured board behaviour.
 
-- `https://github.com/betaflight/config/blob/master/configs/HDZO/HDZERO_HALO/config.h`
-- `https://github.com/betaflight/config/blob/master/README.md` (`SYSTEM_HSE_MHZ`)
-- `https://github.com/betaflight/betaflight/blob/master/src/platform/STM32/startup/system_stm32h7xx.c` (HSI fallback)
-- `https://github.com/betaflight/betaflight/blob/master/src/main/target/common_post.h`
-- Local: `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/hwdef.dat` L22–24; `build/HDZeroHalo/hwdef.h` `STM32_HSECLK 8000000U`
+If HSE does not start, ChibiOS waits for HSERDY in `hal_lld.c:293-301`; an
+absent or different physical source can prevent boot or invalidate timing.
+Ordinary BF source defaults support HSE8 but do not establish the physical part,
+RCC state, tolerance or factory-image provenance.
+
+## HSI-only alternative: not implemented
+
+`stm32h7_mcuconf.h:113-122,176-190` already supports `STM32_HSECLK=0`:
+
+- HSI64, PLL1P = `64/4*50/2 = 400 MHz`.
+- PLL3Q = `64/4*15/5 = 48 MHz`, selected for USB.
+- PLL2Q = `64/8*45/5 = 72 MHz`.
+
+Merely changing `OSCILLATOR_HZ` to zero is not sufficient. The current explicit
+480 MHz CPU expectation would fail `system.cpp:47-48`. Even after reconciling
+CPU frequency, `STM32H743xx.py:63-68` emits an SPI4/5 expectation of 100 MHz,
+which conflicts with 72 MHz and is checked at `system.cpp:76-77`.
+
+A future implementation must reconcile CPU, SPI, UART, timer, USB and generated
+clock expectations, build both images, and qualify oscillator accuracy. The
+HSI-derived nominal USB clock is not evidence of CRS calibration: enabling
+HSI48 does not select it for USB. Do not remove assertions to conceal mismatch.
+No hardware modification is intrinsically required by the MCU/HAL HSI path,
+but no ready-to-use Halo HSI configuration has been validated here.
+
+## Remaining evidence
+
+Obtain OEM clock information, actual BF RCC/PLL state plus image/build identity,
+or a suitable physical inspection/measurement. Clock stability and USB/UART/
+DShot timing still require qualification. No such measurement ran in this WP.
+
+## Sources
+
+- [BF 4.5.1 Makefile](https://github.com/betaflight/betaflight/blob/77d01ba3b76a22909d5f09cb0628820141f95eaa/Makefile#L128)
+- [BF H7 compiler flags](https://github.com/betaflight/betaflight/blob/77d01ba3b76a22909d5f09cb0628820141f95eaa/mk/mcu/STM32H7.mk#L288)
+- [BF PLL source](https://github.com/betaflight/betaflight/blob/77d01ba3b76a22909d5f09cb0628820141f95eaa/src/main/startup/system_stm32h7xx.c#L85)
+- [Official Halo config](https://github.com/betaflight/config/blob/e0273b9564854e0ee1fbadd8200875b30bd35650/configs/HDZO/HDZERO_HALO/config.h)
+- Local `libraries/AP_HAL_ChibiOS/hwdef/common/stm32h7_mcuconf.h`,
+  `hwdef/scripts/STM32H743xx.py`, `system.cpp`, Halo `hwdef*.dat`.
