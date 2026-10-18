@@ -9,7 +9,7 @@
 #
 # ************************************************************************
 # OSCILLATOR_HZ below is PROVISIONAL for offline compilation only.
-# HSE frequency is UNKNOWN (WP1A). NOT VERIFIED — DO NOT FLASH.
+# Physical HSE frequency is unverified. NOT VERIFIED — DO NOT FLASH.
 # ************************************************************************
 
 # MCU class and specific type
@@ -19,8 +19,8 @@ MCU STM32H7xx STM32H743xx
 # Not an official HDZero manufacturer reservation.
 APJ_BOARD_ID AP_HW_HDZERO_HALO
 
-# NOT VERIFIED — DO NOT FLASH. Common H743 peer default (8 MHz); Halo HSE unconfirmed.
-# AnyleafH7 uses 16 MHz — do not treat peers as Halo proof.
+# Normal Betaflight 4.5.1 builds default HSE_VALUE to 8 MHz in the Makefile.
+# Physical clock source on this Halo remains unverified — DO NOT FLASH.
 OSCILLATOR_HZ 8000000
 MCU_CLOCKRATE_MHZ 480
 
@@ -73,7 +73,7 @@ PC2 BATT_CURRENT_SENS ADC1 SCALE(1)
 define HAL_BATT_MONITOR_DEFAULT 4
 define HAL_BATT_VOLT_PIN 10
 define HAL_BATT_CURR_PIN 12
-# VBAT scale UNKNOWN — placeholder only (NOT VERIFIED — DO NOT FLASH)
+# Nominal factor from Betaflight ADC defaults; physical calibration required.
 define HAL_BATT_VOLT_SCALE 11.0
 # BF DEFAULT_CURRENT_METER_SCALE 100
 define HAL_BATT_CURR_SCALE 100.0
@@ -130,17 +130,17 @@ PC7 TIM3_CH2 TIM3 PWM(2) GPIO(51)
 PC8 TIM3_CH3 TIM3 PWM(3) GPIO(52) BIDIR
 PC9 TIM3_CH4 TIM3 PWM(4) GPIO(53)
 
-# LED strip (BF PA10 TIM1 CH3). NODMA to protect TIM3 bdshot DMA.
+# Addressable LED strip unsupported: no TIM1 DMA; preserve motor/SPI/UART DMA.
 PA10 TIM1_CH3 TIM1 PWM(5) GPIO(58) NODMA
 
-# Buzzer (BF PD12, BEEPER_INVERTED) — GPIO idle HIGH (active low), not TIM4
-PD12 BUZZER OUTPUT HIGH GPIO(80)
+# BF BEEPER_INVERTED means active HIGH; inactive after GPIO initialisation.
+PD12 BUZZER OUTPUT LOW GPIO(80)
 define HAL_BUZZER_PIN 80
-define DEFAULT_BUZZ_ON_LVL 0
+define DEFAULT_BUZZ_ON_LVL 1
 
-# PE3 — switchable 9V VTX (HDZero PINIO docs). Polarity UNKNOWN.
-# Held LOW at reset; NOT wired to RELAY defaults. Hardware activation blocked
-# until polarity is proven. NOT VERIFIED — DO NOT FLASH.
+# PE3 — switchable 9V VTX, software active HIGH; electrical state unverified.
+# LOW after GPIO initialisation; reset/ROM DFU rail state is unverified.
+# No RELAY default. NOT VERIFIED — DO NOT FLASH.
 PE3 VTX_PWR OUTPUT LOW GPIO(83)
 
 # DMA: protect motor TIM3 and IMU/flash SPI (Anyleaf / Lucid discipline)
@@ -155,16 +155,19 @@ SPIDEV icm42688_2 SPI1 DEVID2 GYRO2_CS MODE3  2*MHZ 16*MHZ
 SPIDEV mpu6000_2  SPI1 DEVID2 GYRO2_CS MODE3  1*MHZ  8*MHZ
 SPIDEV dataflash  SPI2 DEVID1 FLASH_CS  MODE3 104*MHZ 104*MHZ
 
-# Orientation UNKNOWN — ROTATION_NONE provisional (NOT VERIFIED — DO NOT FLASH)
+# Common raw-register frame: cancel MPU driver's (y,x,-z) transformation.
+# Absolute mounting orientation remains unverified for both SKUs — DO NOT FLASH.
 IMU Invensensev3 SPI:icm42688_1 ROTATION_NONE
-IMU Invensense   SPI:mpu6000_1  ROTATION_NONE
+IMU Invensense   SPI:mpu6000_1  ROTATION_ROLL_180_YAW_90
 IMU Invensensev3 SPI:icm42688_2 ROTATION_NONE
-IMU Invensense   SPI:mpu6000_2  ROTATION_NONE
+IMU Invensense   SPI:mpu6000_2  ROTATION_ROLL_180_YAW_90
 define HAL_DEFAULT_INS_FAST_SAMPLE 1
 
-# No onboard baro in BF target — allow boot without baro; probe I2C pads
-define HAL_BARO_ALLOW_INIT_NO_BARO 1
+# External barometer required. Without one, enter the standard USB config-error
+# loop rather than bypassing barometer prearm checks. Reboot after configuration.
 define AP_BARO_PROBE_EXTERNAL_I2C_BUSES 1
+# BMP280 (bit 1), MS5611 (bit 2), BMP388 (bit 10); saved BARO_PROBE_EXT overrides.
+define HAL_BARO_PROBE_EXT_DEFAULT 1030
 
 # External compass probe on I2C1
 define AP_COMPASS_PROBING_ENABLED 1

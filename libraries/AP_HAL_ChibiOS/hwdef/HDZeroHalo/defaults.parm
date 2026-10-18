@@ -5,4 +5,6 @@
 MOT_PWM_TYPE 5
 
 # MSP DisplayPort already defaulted in hwdef (OSD_TYPE 5 / SERIAL5 protocol 42)
-# Do not auto-enable VTX 9V — PE3 polarity UNKNOWN (no RELAY*_DEFAULT here)
+# BARO_PROBE_EXT defaults to 1030 in hwdef (BMP280/MS5611/BMP388).
+# No barometer: USB config-error recovery only, not normal flight startup.
+# Do not auto-enable VTX 9V; reset/rail behaviour is unverified.

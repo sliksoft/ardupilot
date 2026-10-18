@@ -29,11 +29,33 @@ Tools/scripts/build_bootloaders.py HDZeroHalo
 ## Deviations from Betaflight
 
 | Topic | BF | This hwdef |
-|-------|----|------------|
+| ------- | ---- | ------------ |
 | DShot path | bitbang default | Timer DMA TIM3 (+ BIDIR) |
-| Buzzer | TIM4 mapping available | GPIO idle HIGH (inverted) |
-| LED strip | TIM1 CH3 | TIM1 PWM5 **NODMA** |
-| PE3 9V | CLI PINIO | GPIO held LOW; no RELAY default |
-| HSE | unset in config.h | Provisional 8 MHz (UNKNOWN) |
+| Buzzer | Active HIGH with `BEEPER_INVERTED` | GPIO idle LOW, active HIGH in application; idle LOW in bootloader |
+| LED strip | TIM1 CH3 | Addressable LEDs unsupported: PWM5 **NODMA** |
+| PE3 9V | CLI PINIO | LOW after GPIO initialisation; reset/ROM DFU unverified; no RELAY default |
+| HSE | Makefile defaults to 8 MHz | HSE8 retained for builds; physical source unverified |
 
 See `Tools/HDZeroHalo/WP1B_*.md` for build evidence and review.
+
+## External barometer and bench startup
+
+The normal Copter configuration requires an external barometer on I2C1
+(PB8 SCL, PB9 SDA). The default `BARO_PROBE_EXT` mask is 1030: BMP280 (2),
+MS5611 (4), BMP388 (1024). Existing saved parameter values override defaults.
+`BARO_EXT_BUS=-1` scans external buses; this board exposes I2C1 as external.
+Select a supported probe mask, save, and reboot after changing it.
+
+Without a detected barometer the existing configuration-error loop keeps USB
+MAVLink available for parameter recovery. It does not complete normal startup,
+initialise the OSD, or provide a no-baro flight configuration. No fake barometer,
+arming-check override, or `HAL_BARO_ALLOW_INIT_NO_BARO` is used. An unhealthy
+detected barometer remains subject to standard prearm checks.
+
+## IMU orientation
+
+Both gyro SKUs remain probed on both chip selects. MPU probes apply
+`ROTATION_ROLL_180_YAW_90` to cancel the driver's internal `(y,x,-z)` mapping;
+ICM42688 probes retain `ROTATION_NONE`. This only aligns their raw-register
+frames. Absolute mounting orientation and signed accel/gyro responses on each
+SKU remain hardware blockers. See `Tools/HDZeroHalo/WP2A_IMU_VBAT.md`.
