@@ -1,0 +1,32 @@
+# HDZero Halo FC — ArduCopter board port (project docs)
+
+Versioned project documentation for the HDZero Halo flight-controller ArduCopter
+port. These files live under `Tools/HDZeroHalo/` so they can be committed on the
+development branch without touching vehicle code.
+
+## Document index (in Git)
+
+| File | Purpose |
+|------|---------|
+| `PROJECT_SCOPE.md` | Definitive goals, non-goals, status taxonomy |
+| `HARDWARE_REQUIREMENTS.md` | Target hardware capabilities and evidence status |
+| `PORT_STATUS.md` | Feature matrix (SUPPORTED / NEEDS_CONFIG / …) |
+| `BUILD_BASELINE.md` | Toolchain qualification and H743 reference build |
+| `WP1_REFERENCE_INVENTORY.md` | Read-only H743 hwdef comparison for WP1 |
+
+## Outside Git (project root)
+
+Path: `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/`
+
+| Path | Purpose |
+|------|---------|
+| `docs/` | Working notes / mirrors not required in the ArduPilot fork |
+| `evidence/` | Build logs, size reports, screenshots — keep out of Git |
+
+Large logs and binaries under `evidence/` must not be committed.
+
+## Branch / base
+
+- Development branch: `board/hdzero-halo`
+- Upstream base SHA: see `BUILD_BASELINE.md`
+- No Halo hwdef implementation in WP0
