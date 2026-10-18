@@ -25,8 +25,15 @@ development branch without touching vehicle code.
 | `WP1B_MEMORY_LAYOUT.md` | Provisional flash / param layout |
 | `WP1B_INDEPENDENT_REVIEW.md` | Review findings + fixes |
 | `WP1B_FINAL_REPORT.md` | WP1B status block + readiness |
+| `WP2A_HSE.md` | Oscillator evidence (still UNKNOWN) |
+| `WP2A_FLASH_LAYOUT.md` | BF vs AP flash map + DFU recovery |
+| `WP2A_TIM3_DMA.md` | Shared TIM3 DMA / bdshot review |
+| `WP2A_PE3_POLARITY.md` | 9V PINIO polarity inference |
+| `WP2A_IMU_VBAT.md` | Dual-SKU IMU + battery scales |
+| `WP2A_FINAL_REPORT.md` | WP2A status block + blockers |
 
-**WP1B board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.
+**Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
+**WP2A:** `HARDWARE_FLASH_ALLOWED = NO`.
 
 ## Outside Git (project root)
 

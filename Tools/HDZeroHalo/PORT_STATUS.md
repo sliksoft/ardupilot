@@ -60,6 +60,25 @@ Offline first board port. Oscillator and flash layout remain UNKNOWN.
 
 ---
 
+## WP2A update (2026-10-18)
+
+Hardware preflight from public sources + local build artifacts. **No device connected.**  
+Detail: `WP2A_*.md`.
+
+| Feature | Status | WP2A notes |
+|---------|--------|------------|
+| HSE frequency | UNKNOWN | BF omits `SYSTEM_HSE_MHZ` → H7 HSI PLL path; not physical proof |
+| Flash layout vs BF | BF proven / AP provisional | BF app @ `0x08040000`; AP app @ `0x08020000` + 128 KB BL |
+| DFU recovery to BF | SUPPORTED procedure | HDZ BOOT-button DFU; not exercised |
+| TIM3 UP/CH shared DMA | PASS (code) | DMA1 Stream 0 + DMAMUX; bdshot Shared_DMA; not TESTED |
+| PE3 9V polarity | ACTIVE_HIGH inferred | `pinio_config=1`; idle LOW; hold LOW in hwdef |
+| IMU dual SKU | NEEDS_CONFIG / unprobed | MPU6000 + ICM42688P drivers; rotation UNKNOWN |
+| VBAT scale | UNKNOWN | Placeholder 11.0; BF current scale 100 |
+| Hardware connected | NO | No USB serial/DFU device in WSL |
+| Flash allowed | NO | **HARDWARE_FLASH_ALLOWED = NO** |
+
+---
+
 ## WP0 baseline (2026-10-18) — historical
 
 **Base:** `afeb9c4941543d97f3e04fecf257b8f598f49a6a`  
