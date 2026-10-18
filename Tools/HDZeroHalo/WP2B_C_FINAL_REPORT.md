@@ -48,7 +48,7 @@ EXTERNAL_BARO = REQUIRED_FOR_FLIGHT_NOT_FITTED
 HARDWARE_FLASH_ALLOWED = NO
 
 HEAD_SHA = ca619b8175d2b682ed2d34ba0c44d48d80978b36
-PUSH_STATUS = PENDING
+PUSH_STATUS = PUSHED_origin_board_hdzero-halo
 NEXT_ACTION =
   Optional: photo IMU/silk for Y confirmation; crystal photo/scope;
   keep BF archive; human gate before any flash — do not start WP3 automatically
