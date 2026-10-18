@@ -2,10 +2,11 @@
 
 **Work package:** WP0  
 **Date:** 2026-10-18  
-**Evidence note:** No official Halo schematic/BOM was present in the project tree
-at WP0. Pin-level claims for Halo itself remain **UNKNOWN** until manufacturer
-documentation is obtained. Capability targets below are product goals; ArduPilot
-support status is tracked in `PORT_STATUS.md`.
+**Evidence note (WP1A):** Official Betaflight target
+`configs/HDZO/HDZERO_HALO/config.h` and HDZero product/firmware docs supply the
+intended pinmap (see `WP1A_PINMAP.md`). No public schematic was found; crystal
+frequency and bootloader flash layout remain **UNKNOWN**. ArduPilot support
+status is tracked in `PORT_STATUS.md`.
 
 ## Target MCU
 

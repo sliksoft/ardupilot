@@ -12,7 +12,14 @@ development branch without touching vehicle code.
 | `HARDWARE_REQUIREMENTS.md` | Target hardware capabilities and evidence status |
 | `PORT_STATUS.md` | Feature matrix (SUPPORTED / NEEDS_CONFIG / …) |
 | `BUILD_BASELINE.md` | Toolchain qualification and H743 reference build |
-| `WP1_REFERENCE_INVENTORY.md` | Read-only H743 hwdef comparison for WP1 |
+| `WP1_REFERENCE_INVENTORY.md` | Read-only H743 hwdef comparison (WP0) |
+| `WP1A_HARDWARE_AUDIT.md` | WP1A consolidated hardware audit |
+| `WP1A_PINMAP.md` | Halo pin inventory (BF + HDZero) |
+| `WP1A_DSHOT_DMA.md` | DShot300/600/bdshot + DMA feasibility |
+| `WP1A_BOOTLOADER.md` | Oscillator, flash layout, DFU, board ID |
+| `WP1A_DRIVER_COMPATIBILITY.md` | Existing driver coverage |
+| `WP1A_BLOCKERS.md` | HARD/SOFT gates before flash |
+| `WP1A_FINAL_REPORT.md` | WP1A status block + readiness |
 
 ## Outside Git (project root)
 

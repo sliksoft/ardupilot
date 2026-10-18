@@ -1,42 +1,74 @@
 # PORT_STATUS — feature matrix
 
-**Work package:** WP0 (no Halo firmware yet)  
-**Date:** 2026-10-18  
-**Base:** `afeb9c4941543d97f3e04fecf257b8f598f49a6a`
-
 Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNKNOWN | TESTED
 
-Nothing below is **TESTED** for Halo hardware.
+Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
-| Feature | Status | Notes / evidence in tree |
-|---------|--------|--------------------------|
-| STM32H743 + ChibiOS | SUPPORTED | Many hwdefs, e.g. `TBS_LUCID_H7/hwdef.dat` L5 |
-| MPU6000 driver | SUPPORTED | `IMU Invensense` — e.g. Lucid L209–210, MatekH743 L208 |
-| ICM42688P driver | SUPPORTED | `IMU Invensensev3` — Lucid L207–208, TMotorH743 L149–153 |
-| Four motor outputs | NEEDS_CONFIG | Pattern on GEPRC_TAKER_H743 L117–121, FoxeerH743v1 L128–131 |
-| DShot300 / DShot600 | SUPPORTED | `AP_MotorsMulticopter` MOT_PWM_TYPE values 5/6 |
-| Bidirectional DShot | NEEDS_CONFIG | Requires `BIDIR` + DMA; Lucid L145–154, MatekH743-bdshot L23–30; `HAL_WITH_BIDIR_DSHOT` via `chibios_hwdef.py` ~L2201 |
-| ESC RPM (bdshot) | NEEDS_CONFIG | Same as bi-dir; hardware validation later |
-| ESC UART telemetry | SUPPORTED / NEEDS_CONFIG | `SerialProtocol_ESCTelemetry` — Lucid L134–137 |
-| CRSF / ELRS | SUPPORTED / NEEDS_CONFIG | `SerialProtocol_CRSF` / RCIN UART — `AP_RCProtocol_CRSF.cpp`; typical `SerialProtocol_RCIN` on RX UART |
-| HDZero MSP DisplayPort | SUPPORTED / NEEDS_CONFIG | `SerialProtocol_MSP_DisplayPort` — Lucid L111–115; `AP_OSD_MSP_DisplayPort.cpp` |
-| UART / SPI / I²C / ADC | NEEDS_CONFIG | Standard hwdef primitives; Halo pins UNKNOWN |
-| Battery / current sense | NEEDS_CONFIG | `HAL_BATT_*` pattern — Lucid L68–81 |
-| 16 MB SPI flash logging | SUPPORTED / NEEDS_CONFIG | `HAL_LOGGING_DATAFLASH_ENABLED` — SkystarsH7HD L28–29,62; FoxeerH743v1 L145–147; TMotorH743 L137–139 |
-| Buzzer | NEEDS_CONFIG | GPIO buzzer — Lucid L161–163 |
-| LED | NEEDS_CONFIG | GPIO notify — Lucid L89–96 |
-| Switchable 9V | NEEDS_CONFIG | Lucid `VPWR` PC13 L178–183 / bootloader L51–52 |
-| USB + MAVLink | SUPPORTED / NEEDS_CONFIG | OTG1 + serial order — Lucid L23–25,99 |
-| Bootloader / safe recovery | NEEDS_CONFIG | `hwdef-bl.dat` patterns; Lucid BL enables DFU + SD flash L55–77 |
-| External GPS | SUPPORTED / NEEDS_CONFIG | UART GPS protocol defaults — Lucid L106–109 |
-| External compass | SUPPORTED / NEEDS_CONFIG | `AP_COMPASS_PROBING_ENABLED` — Lucid L201–205 |
-| External / onboard baro | SUPPORTED / NEEDS_CONFIG | DPS310/BMP388 patterns — Lucid L218–219 |
-| ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code; not board-specific |
-| Halo board hwdef | UNKNOWN | Not present; WP1+ |
+---
+
+## WP1A update (2026-10-18)
+
+Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) and HDZero docs replaces WP0 “pins UNKNOWN” for most I/O. Oscillator and bootloader flash layout remain **UNKNOWN**.
+
+| Feature | Status | WP1A notes |
+|---------|--------|------------|
+| STM32H743 + ChibiOS | SUPPORTED | BF + HDZ; package marking still UNKNOWN |
+| Oscillator Hz | UNKNOWN | Must measure; see `WP1A_BOOTLOADER.md` |
+| MPU6000 (SKU) | SUPPORTED / NEEDS_CONFIG | SPI1 CS PB4/PB3; Invensense |
+| ICM42688P (SKU) | SUPPORTED / NEEDS_CONFIG | Alternate SKU; Invensensev3; not dual-fitted |
+| Four motors PC6–9 TIM3 | NEEDS_CONFIG | BF L51–54; AnyleafH7 L86–89 twin |
+| DShot300 | NEEDS_CONFIG | AP timer-DMA (not BF bitbang) |
+| DShot600 | NEEDS_CONFIG | Same path |
+| Bidirectional DShot | NEEDS_CONFIG | BIDIR + DMA_NOSHARE TIM3* |
+| ESC RPM (bdshot) | NEEDS_CONFIG | Plus UART4 RX PA1 ESC telem |
+| CRSF / ELRS UART1 | NEEDS_CONFIG | PB6/PB7; Gemini onboard |
+| HDZero MSP DisplayPort UART5 | NEEDS_CONFIG | PC12/PD2; OSD_TYPE 5 |
+| Analog OSD | HARDWARE_LIMITATION | None by design |
+| SPI flash W25Q128 | NEEDS_CONFIG | SPI2 PB12; JEDEC SUPPORTED |
+| Battery ADC PC0/PC2 | NEEDS_CONFIG | CURR scale 100 (BF); VBAT scale UNKNOWN |
+| RSSI ADC PC1 | NEEDS_CONFIG | Optional |
+| Buzzer PD12 | NEEDS_CONFIG | Inverted (BF) |
+| Status LED PE2 | NEEDS_CONFIG | |
+| LED strip PA10 | NEEDS_CONFIG | TIM1 CH3; prefer NODMA w/ bdshot |
+| Switchable 9V PE3 | NEEDS_CONFIG | HDZ `PINIO 1 E03` |
+| USB DFU / MAVLink | SUPPORTED / NEEDS_CONFIG | Vendor DFU procedure documented |
+| Bootloader layout | UNKNOWN | 128 vs 384 KB |
+| External GPS / mag / baro | NEEDS_CONFIG | Pads + I2C1 |
+| ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code |
+| Halo hwdef in tree | UNKNOWN | Not implemented (WP1B+) |
+| Prior ArduPilot Halo port | — | **None found** |
+
+Detail: `WP1A_*.md` in this directory.
+
+---
+
+## WP0 baseline (2026-10-18) — historical
+
+**Base:** `afeb9c4941543d97f3e04fecf257b8f598f49a6a`  
+WP0 treated Halo pins as UNKNOWN pending OEM docs. That assumption is **superseded** by WP1A for pinmap items above; oscillator/layout unknowns remain valid.
+
+| Feature | WP0 status | Notes / evidence in tree |
+|---------|------------|--------------------------|
+| STM32H743 + ChibiOS | SUPPORTED | e.g. `TBS_LUCID_H7/hwdef.dat` L5 |
+| MPU6000 driver | SUPPORTED | `IMU Invensense` |
+| ICM42688P driver | SUPPORTED | `IMU Invensensev3` |
+| Four motor outputs | NEEDS_CONFIG | GEPRC / Foxeer patterns |
+| DShot300 / DShot600 | SUPPORTED | MOT_PWM_TYPE 5/6 |
+| Bidirectional DShot | NEEDS_CONFIG | BIDIR + DMA |
+| ESC UART telemetry | SUPPORTED / NEEDS_CONFIG | SerialProtocol_ESCTelemetry |
+| CRSF / ELRS | SUPPORTED / NEEDS_CONFIG | AP_RCProtocol_CRSF |
+| HDZero MSP DisplayPort | SUPPORTED / NEEDS_CONFIG | AP_OSD_MSP_DisplayPort |
+| UART / SPI / I²C / ADC | NEEDS_CONFIG | WP0: pins UNKNOWN → see WP1A |
+| Battery / current sense | NEEDS_CONFIG | HAL_BATT_* |
+| 16 MB SPI flash logging | SUPPORTED / NEEDS_CONFIG | HAL_LOGGING_DATAFLASH_ENABLED |
+| Buzzer / LED / 9V | NEEDS_CONFIG | WP0 pin UNKNOWN → WP1A PD12/PE2/PE3 |
+| USB + MAVLink | SUPPORTED / NEEDS_CONFIG | OTG1 |
+| Bootloader / recovery | NEEDS_CONFIG | Layout UNKNOWN |
+| External GPS / compass / baro | SUPPORTED / NEEDS_CONFIG | Probing |
+| ArduCopter modes / failsafes | SUPPORTED | Not board-specific |
+| Halo board hwdef | UNKNOWN | WP1B+ |
 | Halo on-hardware flight | UNKNOWN | No TESTED evidence |
 
-## Summary for WP1
+### WP0 summary
 
-Almost all product goals map to **SUPPORTED** drivers plus **NEEDS_CONFIG**
-hwdef work. No feature in this list currently requires a new sensor driver class
-based solely on the stated goals. Pinout / BOM evidence is the blocking input.
+Almost all product goals map to SUPPORTED drivers plus NEEDS_CONFIG hwdef work. WP1A supplies the pinmap that WP0 lacked.
