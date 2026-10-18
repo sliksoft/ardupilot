@@ -166,8 +166,10 @@ IMU Invensensev3 SPI:icm42688_2 ROTATION_ROLL_180
 IMU Invensense   SPI:mpu6000_2  ROTATION_YAW_270
 define HAL_DEFAULT_INS_FAST_SAMPLE 1
 
-# External barometer required. Without one, enter the standard USB config-error
-# loop rather than bypassing barometer prearm checks. Reboot after configuration.
+# No onboard baro. Allow Copter to finish init without one (standard AP option).
+# Skips fatal "unable to initialise driver" and the default baro prearm check.
+# External BMP280/MS5611/BMP388 on I2C1 still probed when fitted.
+define HAL_BARO_ALLOW_INIT_NO_BARO 1
 define AP_BARO_PROBE_EXTERNAL_I2C_BUSES 1
 # BMP280 (bit 1), MS5611 (bit 2), BMP388 (bit 10); saved BARO_PROBE_EXT overrides.
 define HAL_BARO_PROBE_EXT_DEFAULT 1030

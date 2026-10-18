@@ -38,19 +38,21 @@ Tools/scripts/build_bootloaders.py HDZeroHalo
 
 See `Tools/HDZeroHalo/WP1B_*.md` for build evidence and review.
 
-## External barometer and bench startup
+## External barometer and no-baro startup
 
-The normal Copter configuration requires an external barometer on I2C1
-(PB8 SCL, PB9 SDA). The default `BARO_PROBE_EXT` mask is 1030: BMP280 (2),
-MS5611 (4), BMP388 (1024). Existing saved parameter values override defaults.
-`BARO_EXT_BUS=-1` scans external buses; this board exposes I2C1 as external.
-Select a supported probe mask, save, and reboot after changing it.
+`HAL_BARO_ALLOW_INIT_NO_BARO 1` is set so ArduCopter can complete normal startup
+without an onboard or external barometer (same upstream option used on other
+FPV boards without a baro). That option also skips the default barometer
+prearm check. No extra Halo-specific arming blockade is added.
 
-Without a detected barometer the existing configuration-error loop keeps USB
-MAVLink available for parameter recovery. It does not complete normal startup,
-initialise the OSD, or provide a no-baro flight configuration. No fake barometer,
-arming-check override, or `HAL_BARO_ALLOW_INIT_NO_BARO` is used. An unhealthy
-detected barometer remains subject to standard prearm checks.
+External barometers on I2C1 (PB8 SCL, PB9 SDA) remain supported. The default
+`BARO_PROBE_EXT` mask is 1030: BMP280 (2), MS5611 (4), BMP388 (1024). Saved
+parameter values override defaults. `BARO_EXT_BUS=-1` scans external buses;
+this board exposes I2C1 as external. A future BMP388 (or other masked probe)
+is detected when connected after save/reboot as usual.
+
+This is **not** proof of flight safety or working altitude control without a
+baro. Altitude-dependent modes still need a healthy barometer when used.
 
 ## IMU orientation
 
