@@ -4,6 +4,13 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-C update (2026-10-18)
+
+Read-only MSP six-face Acc on the same Halo (`evidence/wp2b-c/`). MSP X=forward
+(USB aft) and Z=up match; Y vs board-right ambiguous. Retain ICM
+`ROTATION_NONE`. Pre-flash gates listed in `WP2B_C_HARDWARE_GATES.md`.
+**HARDWARE_FLASH_ALLOWED = NO**. Detail: `WP2B_C_*.md`.
+
 ## WP2B-B update (2026-10-18)
 
 Live read-only CLI on `/dev/ttyACM0` (`0483:5740`). Unit is **HDZERO_HALO** on
