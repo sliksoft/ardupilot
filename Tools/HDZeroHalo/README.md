@@ -33,9 +33,18 @@ development branch without touching vehicle code.
 | `WP2A_FINAL_REPORT.md` | WP2A status block + blockers |
 | `WP2A_BAROMETER.md` | External barometer defaults, retained prearm checks and USB recovery |
 | `WP2A_REVIEW_FIX_REPORT.md` | Nine review findings, changes, offline validation and remaining hardware blockers |
+| `WP2B_A_BETAFLIGHT_SOURCES.md` | OEM/BF provenance, CLI, hashes (WP2B-A) |
+| `WP2B_A_FIRMWARE_BUILD.md` | Reproduced BF 4.5.1 Halo build |
+| `WP2B_A_CLOCK_ANALYSIS.md` | HSE8 software chain vs physical unknown |
+| `WP2B_A_IMU_ANALYSIS.md` | Dual SKU IMU / rotation evidence |
+| `WP2B_A_POWER_ADC.md` | PE3 PINIO + VBAT/current scales |
+| `WP2B_A_DSHOT_COMPARISON.md` | BF bitbang vs AP TIM3 DMA |
+| `WP2B_A_BOOTLOADER_RECOVERY.md` | Flash maps and DFU return-to-BF plan |
+| `WP2B_A_FINAL_REPORT.md` | WP2B-A status block |
+| `WP2B_A_INDEPENDENT_REVIEW.md` | Read-only verification of key claims |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
-**WP2A:** `HARDWARE_FLASH_ALLOWED = NO`.
+**WP2B-A:** `HARDWARE_FLASH_ALLOWED = NO` (research only; no firmware changes).
 
 ## Outside Git (project root)
 

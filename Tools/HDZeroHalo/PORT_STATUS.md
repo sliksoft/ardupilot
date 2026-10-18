@@ -4,6 +4,13 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-A update (2026-10-18)
+
+Betaflight forensic research only (`WP2B_A_*.md`). Local BF 4.5.1 Halo build
+reproduced with config `0096077` (OEM CLI). Software HSE8 confirmed; physical
+crystal still unverified. Official Halo-named 4.5.1 hex not found for download;
+OEM CLI zip found. No ArduPilot firmware changes. **HARDWARE_FLASH_ALLOWED = NO**.
+
 ## Codex review fix update (2026-10-18)
 
 Current details and offline validation: `WP2A_REVIEW_FIX_REPORT.md`.
