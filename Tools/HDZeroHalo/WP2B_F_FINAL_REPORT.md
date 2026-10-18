@@ -37,8 +37,8 @@ OPEN_BLOCKERS =
   HSE_physical_unproved;
   gyro_polarity_incomplete;
   no_baro_for_normal_copter_start
-COMMIT_SHA = aedc291c4262d6b38e3234da64e8fe5c127eb1ea
-PUSH_STATUS = PENDING_PUSH
+COMMIT_SHA = ed79e74bfd6639093f6a49dd090d0e7063b7a107
+PUSH_STATUS = PUSHED_origin_board_hdzero-halo
 
 HARDWARE_FLASH_ALLOWED = NO
 ```
