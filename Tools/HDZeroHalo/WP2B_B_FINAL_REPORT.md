@@ -76,7 +76,7 @@ HARDWARE_QUESTIONS_REMAINING =
 HARDWARE_FLASH_ALLOWED = NO
 
 HEAD_SHA = 9ed47d1d5053b085fc27d44a5199353fe8b49bb1
-PUSH_STATUS = PENDING_PUSH
+PUSH_STATUS = PUSHED_origin_board_hdzero-halo
 NEXT_ACTION =
   Optional: photograph crystal/IMU; keep BF dump archived before any future AP flash approval;
   do not flash without human gate
