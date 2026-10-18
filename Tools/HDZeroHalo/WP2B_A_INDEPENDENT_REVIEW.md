@@ -42,4 +42,15 @@ Research agent cross-check may append notes below without changing these disposi
 
 ## Agent appendix
 
-_(Reserved for parallel explore-agent output.)_
+Parallel read-only gate ([Independent WP2B-A review](7a6258f8-d6e9-49d4-861b-a62ce7d9b6b2)) rechecked the same five claims plus OEM CLI / hex / scale cross-checks against `evidence/wp2b-a/` and the ArduPilot hwdef. Verdict: all claims **PASS**; overall **WP2B_A_STATUS = PARTIAL**; **HARDWARE_FLASH_ALLOWED = NO**.
+
+Additional notes retained from that review (no disposition change):
+
+| Note | Action |
+| ---- | ------ |
+| Do not treat closed unmerged PR#835 CS map as factory fact without WHOAMI | Already INFERRED in `WP2B_A_IMU_ANALYSIS.md` |
+| OEM CLI omits PINIO while docs require it — dump may be incomplete vs live board | Already noted in `WP2B_A_POWER_ADC.md` |
+| Community `2026.6.2` Halo hex ≠ official 4.5.1 cloud | Separated in `WP2B_A_BETAFLIGHT_SOURCES.md` |
+| AP app `@0x08020000` overlaps BF CONFIG region — flash hazard | Already in `WP2B_A_BOOTLOADER_RECOVERY.md` |
+
+Agreed HARDWARE_REQUIRED set unchanged: physical HSE, absolute IMU + CS/WHOAMI, PE3/9V electrical, ADC calibration, AP TIM3 bdshot, factory flash/DFU identity.
