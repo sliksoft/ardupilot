@@ -17,9 +17,10 @@
 | Source | Finding |
 |--------|---------|
 | HDZero docs | No crystal frequency published |
-| Betaflight `HDZERO_HALO/config.h` | No `HSE_VALUE` override |
+| Betaflight `HDZERO_HALO/config.h` | No `HSE_VALUE` / `SYSTEM_HSE_MHZ` override |
 | Betaflight STM32H7 HAL default | `HSE_VALUE (25000000UL)` in `stm32h7xx_hal_conf.h` — **platform default, not board proof** |
 | ArduPilot peer boards | Usually `OSCILLATOR_HZ 8000000`; **AnyleafH7 uses 16000000** (`common.inc` L8) |
+| dogjutsu fork `HDZERO_HALO` | Sets 8 MHz claiming BF does — **incorrect claim**; ignore for HSE |
 
 **Verification plan (required before trusting clocks on hardware):**
 

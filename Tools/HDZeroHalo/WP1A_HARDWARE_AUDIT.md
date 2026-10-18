@@ -53,8 +53,20 @@ Searches performed (2026-10-18):
 - `gh search code/prs/issues` for HDZERO_HALO / HDZero Halo on `ArduPilot/ardupilot`
 - Local `git grep` under hwdef / Tools
 - Web search for ArduPilot Halo board ports
+- Follow-up: personal-fork / BF PR scan (2026-10-18)
 
-**Result: no ArduPilot/ArduCopter `HDZERO_HALO` hwdef, PR, or maintained community board port found.**
+| Finding | Status |
+|---------|--------|
+| Upstream `ArduPilot/ardupilot` | **No** hwdef / issue / PR |
+| Unofficial fork | **Yes** — https://github.com/dogjutsu/ardupilot/pull/2 (`hdzero_halo` branch), merged **only into that fork** (2026-02-27). Combat-robot/Rover oriented. |
+| This workspace | Docs only; no `hwdef` yet |
+
+**dogjutsu fork — use as optional reference only, not authority:**
+
+- Claims `OSCILLATOR_HZ 8000000` because “Betaflight uses 8 MHz” — **false**: master BF `HDZERO_HALO/config.h` has **no** `SYSTEM_HSE_MHZ` / HSE define. Keep HSE **UNKNOWN**.
+- README IMU CS note disagrees with BF GYRO_1=PB4 (ICM) vs GYRO_2=PB3 (MPU) split from closed BF PR #835.
+- Marks BIDIR on motors **and** LED/beeper PWM; APJ board ID `9300` is a local placeholder.
+- Do **not** copy blindly into an upstream-quality Copter port.
 
 Related (not a Halo FC port):
 

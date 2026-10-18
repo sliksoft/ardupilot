@@ -13,8 +13,9 @@ No **TESTED** rows — research only. No new drivers identified as mandatory for
 | ICM42688P driver | `IMU Invensensev3` | SUPPORTED |
 | Bus | SPI1 PA5/6/7 | NEEDS_CONFIG |
 | CS pins | PB4 (gyro1), PB3 (gyro2) | NEEDS_CONFIG |
-| EXTI | PC13 / PA15 | Optional; many boards omit DRDY in hwdef |
+| EXTI | PC13 / PA15 | Optional; many boards omit DRDY; Invensensev3 has no DRDY path |
 | SKU reality | HDZ: **either** MPU6000 **or** ICM42688, not both fitted | HARDWARE note |
+| CS ↔ SKU (inference) | ICM→PB4/PC13; MPU→PB3/PA15 (closed BF PR #835) | DER — probe both |
 | One hwdef for both SKUs | Yes — probe both CS with both driver types (Lucid/Matek multi-probe pattern) | NEEDS_CONFIG |
 | Rotation | EmuFlight CW0°; ArduPilot `ROTATION_*` | **UNKNOWN** until bench |
 

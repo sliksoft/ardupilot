@@ -51,6 +51,18 @@ ArduPilot reference with **identical** motor pins + TIM3 + `BIDIR`:
 | Population | **One gyro per SKU** | “two versions, MPU6000 or ICM42688” | HDZ introduction |
 | Orientation | CW0° in EmuFlight target | Not HDZero primary | DER / UNK for ArduPilot `ROTATION_*` |
 
+### CS ↔ SKU mapping (strong inference, not merged BF master)
+
+Closed (unmerged) Betaflight config PR [#835](https://github.com/betaflight/config/pull/835) proposed splitting targets:
+
+| SKU target | Gyro | CS | EXTI |
+|------------|------|----|------|
+| `HDZERO_HALO` (ICM) | ICM42688P | **PB4** | **PC13** (= GYRO_1 on master) |
+| `HDZERO_HALO_MPU6000` | MPU6000 | **PB3** | **PA15** (= GYRO_2 on master) |
+
+Master still ships **one** target with both drivers and both CS lines. Field MPU6000 SKU confirmed in BF issue [#14536](https://github.com/betaflight/betaflight/issues/14536).  
+Treat the table as **best probe order for ArduPilot**, not as manufacturer schematic.
+
 Do **not** assume two physical gyros are fitted because two CS/EXTI pairs exist.
 
 ## SPI flash

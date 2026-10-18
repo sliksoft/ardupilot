@@ -36,7 +36,7 @@ Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) an
 | External GPS / mag / baro | NEEDS_CONFIG | Pads + I2C1 |
 | ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code |
 | Halo hwdef in tree | UNKNOWN | Not implemented (WP1B+) |
-| Prior ArduPilot Halo port | — | **None found** |
+| Prior ArduPilot Halo port | — | **None upstream**; unofficial [dogjutsu PR#2](https://github.com/dogjutsu/ardupilot/pull/2) only — see `WP1A_HARDWARE_AUDIT.md` |
 
 Detail: `WP1A_*.md` in this directory.
 

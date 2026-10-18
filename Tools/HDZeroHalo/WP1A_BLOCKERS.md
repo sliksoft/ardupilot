@@ -31,6 +31,13 @@
 - Need for new IMU/flash/CRSF/MSP drivers — **not required**
 - BF DShot bitbang default — **irrelevant** to ArduPilot timer DMA path
 - Absence of analog OSD — **by design**
+- Missing upstream ArduPilot port — greenfield expected; dogjutsu fork is non-blocking reference only
+
+## Anti-patterns (do not adopt)
+
+- dogjutsu `OSCILLATOR_HZ 8000000` justified as “BF uses 8 MHz” — BF Halo `config.h` does not set HSE
+- BIDIR on LED strip / buzzer pins (dogjutsu PWM5/6) for a standard Copter motor port
+- Board ID `9300` without `board_types.txt` reservation
 
 ## Gate for WP1B (first firmware **build**)
 

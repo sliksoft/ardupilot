@@ -13,8 +13,8 @@ WP1A_STATUS = PARTIAL
 HALO_PINMAP = CONFIRMED (Betaflight HDZERO_HALO + HDZero docs; not electrically signed-off)
 MCU = STM32H743 (exact package UNKNOWN)
 OSCILLATOR = UNKNOWN (must measure; do not guess)
-GYRO_MPU6000 = SUPPORTED driver / NEEDS_CONFIG (SKU variant on SPI1 CS PB4 or PB3)
-GYRO_ICM42688 = SUPPORTED driver / NEEDS_CONFIG (alternate SKU; not dual-fitted)
+GYRO_MPU6000 = SUPPORTED driver / NEEDS_CONFIG (SKU; CS PB3/EXTI PA15 per BF PR#835)
+GYRO_ICM42688 = SUPPORTED driver / NEEDS_CONFIG (SKU; CS PB4/EXTI PC13 per BF PR#835)
 DSHOT300 = NEEDS_CONFIG (ArduPilot timer-DMA SUPPORTED; AnyleafH7 PC6-9 TIM3 twin)
 DSHOT600 = NEEDS_CONFIG (same path; not TESTED)
 BIDIR_DSHOT = NEEDS_CONFIG (BIDIR+DMA_NOSHARE; Anyleaf precedent; not TESTED)
@@ -28,11 +28,13 @@ USB_DFU = SUPPORTED (vendor BOOT-button DFU procedure)
 BOOTLOADER_LAYOUT = UNKNOWN (128 vs 384 KB reserve)
 RECOVERY_PATH = SUPPORTED (STM32 DFU → reflash Betaflight HDZERO_HALO)
 
-EXISTING_PORT_FOUND = NO
+EXISTING_PORT_FOUND = NO upstream; unofficial dogjutsu/ardupilot PR#2 only (not authoritative)
 NEW_DRIVERS_REQUIRED = NO
 HARDWARE_LIMITATIONS = no analog OSD; UART3/UART4 TX absent (RX-only); single IMU per SKU
 UNRESOLVED_QUESTIONS = HSE Hz; BL flash reserve; VBAT scale; IMU rotation; PE3 polarity; H743 package
 ```
+
+**Addendum:** BF config blob `df3ee99d…`; content introduced `d3abecf9…` (#670); path regroup `e0273b95…`. Gyro CS SKU split from closed BF PR #835 (ICM→PB4/PC13, MPU→PB3/PA15). Reject dogjutsu 8 MHz HSE rationale.
 
 ## Documents produced
 
