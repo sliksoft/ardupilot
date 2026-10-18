@@ -1,0 +1,8 @@
+# HDZero Halo provisional defaults — offline bring-up only
+# NOT VERIFIED — DO NOT FLASH
+#
+# Start at DShot300 (5); switch to DShot600 (6) after AM32 bench. Bi-dir via SERVO_BLH_BDMASK later.
+MOT_PWM_TYPE 5
+
+# MSP DisplayPort already defaulted in hwdef (OSD_TYPE 5 / SERIAL5 protocol 42)
+# Do not auto-enable VTX 9V — PE3 polarity UNKNOWN (no RELAY*_DEFAULT here)

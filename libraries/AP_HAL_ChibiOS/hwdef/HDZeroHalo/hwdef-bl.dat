@@ -1,0 +1,46 @@
+# HDZero Halo bootloader hwdef
+#
+# ************************************************************************
+# OSCILLATOR_HZ / FLASH_BOOTLOADER_LOAD_KB are PROVISIONAL.
+# NOT VERIFIED — DO NOT FLASH.
+# ************************************************************************
+
+# MCU class and specific type
+MCU STM32H7xx STM32H743xx
+
+APJ_BOARD_ID AP_HW_HDZERO_HALO
+
+# NOT VERIFIED — DO NOT FLASH (must match main hwdef.dat)
+OSCILLATOR_HZ 8000000
+
+FLASH_SIZE_KB 2048
+
+# bootloader at start of flash
+FLASH_RESERVE_START_KB 0
+
+# Must match FLASH_RESERVE_START_KB in hwdef.dat (provisional 128 KB)
+FLASH_BOOTLOADER_LOAD_KB 128
+
+# USB bootloading only (safe minimal set)
+SERIAL_ORDER OTG1
+
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# Hold CS high in bootloader
+PB4 GYRO1_CS CS
+PB3 GYRO2_CS CS
+PB12 FLASH_CS CS
+
+# Status LED
+PE2 LED_BOOTLOADER OUTPUT LOW
+define HAL_LED_ON 0
+
+# Keep VTX 9V rail disabled during bootloader (polarity UNKNOWN — LOW held)
+PE3 VTX_PWR OUTPUT LOW
+
+# Enable STM32 ROM DFU path from AP bootloader (peer pattern)
+ENABLE_DFU_BOOT 1

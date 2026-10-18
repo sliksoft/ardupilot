@@ -1,0 +1,183 @@
+# HDZero Halo FC (STM32H743) — ArduCopter board definition
+#
+# Pin map from official Betaflight target:
+#   betaflight/config configs/HDZO/HDZERO_HALO/config.h
+#   path-history commit e0273b9564854e0ee1fbadd8200875b30bd35650
+#
+# Motor TIM3 PC6–PC9 pattern matches AnyleafH7 (BIDIR DShot).
+# SPI flash / FPV UART roles match FoxeerH743v1 / TMotorH743 patterns.
+#
+# ************************************************************************
+# OSCILLATOR_HZ below is PROVISIONAL for offline compilation only.
+# HSE frequency is UNKNOWN (WP1A). NOT VERIFIED — DO NOT FLASH.
+# ************************************************************************
+
+# MCU class and specific type
+MCU STM32H7xx STM32H743xx
+
+# Provisional development board ID (Tools/AP_Bootloader/board_types.txt).
+# Not an official HDZero manufacturer reservation.
+APJ_BOARD_ID AP_HW_HDZERO_HALO
+
+# NOT VERIFIED — DO NOT FLASH. Common H743 peer default (8 MHz); Halo HSE unconfirmed.
+# AnyleafH7 uses 16 MHz — do not treat peers as Halo proof.
+OSCILLATOR_HZ 8000000
+MCU_CLOCKRATE_MHZ 480
+
+FLASH_SIZE_KB 2048
+
+# Provisional AP-native layout (AnyleafH7 / Lucid-style). NOT VERIFIED vs factory BF image.
+# Alternative FPV pattern is 384 KB reserve + STORAGE_FLASH_PAGE 1 — see WP1B_MEMORY_LAYOUT.md
+FLASH_RESERVE_START_KB 128
+
+define HAL_STORAGE_SIZE 32768
+# H743: 16 pages of 128k; use last pages for params when BL occupies first 128k
+STORAGE_FLASH_PAGE 14
+
+# ChibiOS system timer (not TIM3 motors)
+STM32_ST_USE_TIMER 12
+define CH_CFG_ST_RESOLUTION 16
+
+# USB (standard H743 OTG pins; not listed in BF config.h — peer convention)
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# SPI1 — gyros (BF PA5/PA6/PA7)
+PA5 SPI1_SCK SPI1
+PA6 SPI1_MISO SPI1
+PA7 SPI1_MOSI SPI1
+
+# Gyro CS (GPIO, not SPI AF). GYRO_1=PB4, GYRO_2=PB3 (BF)
+PB4 GYRO1_CS CS
+PB3 GYRO2_CS CS
+
+# SPI2 — W25Q128 dataflash (BF)
+PB13 SPI2_SCK SPI2
+PB14 SPI2_MISO SPI2
+PB15 SPI2_MOSI SPI2
+PB12 FLASH_CS CS
+
+# I2C1 — external mag/baro pads (BF PB8/PB9)
+I2C_ORDER I2C1
+PB8 I2C1_SCL I2C1 PULLUP
+PB9 I2C1_SDA I2C1 PULLUP
+
+# ADC (BF: VBAT PC0, RSSI PC1, CURR PC2)
+PC0 BATT_VOLTAGE_SENS ADC1 SCALE(1)
+PC1 RSSI_ADC ADC1 SCALE(1)
+PC2 BATT_CURRENT_SENS ADC1 SCALE(1)
+
+define HAL_BATT_MONITOR_DEFAULT 4
+define HAL_BATT_VOLT_PIN 10
+define HAL_BATT_CURR_PIN 12
+# VBAT scale UNKNOWN — placeholder only (NOT VERIFIED — DO NOT FLASH)
+define HAL_BATT_VOLT_SCALE 11.0
+# BF DEFAULT_CURRENT_METER_SCALE 100
+define HAL_BATT_CURR_SCALE 100.0
+define BOARD_RSSI_ANA_PIN 11
+
+# Status LED (BF LED0 PE2)
+define AP_NOTIFY_GPIO_LED_1_ENABLED 1
+PE2 LED0 OUTPUT LOW GPIO(90)
+define AP_NOTIFY_GPIO_LED_1_PIN 90
+
+# SERIAL_ORDER: USB + UARTs present on Halo
+# SERIAL1=USART1 ELRS, SERIAL2=USART2, SERIAL3=USART3 RX-only,
+# SERIAL4=UART4 RX-only ESC telem, SERIAL5=UART5 MSP DP,
+# SERIAL6=UART7, SERIAL7=UART8
+SERIAL_ORDER OTG1 USART1 USART2 USART3 UART4 UART5 UART7 UART8
+
+# USART1 — Gemini ELRS (BF SERIALRX)
+PB6 USART1_TX USART1
+PB7 USART1_RX USART1
+define DEFAULT_SERIAL1_PROTOCOL SerialProtocol_RCIN
+
+# USART2 — free pads
+PA2 USART2_TX USART2
+PA3 USART2_RX USART2
+define DEFAULT_SERIAL2_PROTOCOL SerialProtocol_None
+
+# USART3 — DJI HDL RX only (BF UART3_RX PB11, no TX)
+PB11 USART3_RX USART3 NODMA
+define DEFAULT_SERIAL3_PROTOCOL SerialProtocol_None
+
+# UART4 — ESC telemetry RX only (BF UART4_RX PA1)
+PA1 UART4_RX UART4 NODMA
+define DEFAULT_SERIAL4_PROTOCOL SerialProtocol_ESCTelemetry
+
+# UART5 — HDZero MSP DisplayPort (BF MSP_DISPLAYPORT_UART)
+PC12 UART5_TX UART5
+PD2 UART5_RX UART5
+define DEFAULT_SERIAL5_PROTOCOL SerialProtocol_MSP_DisplayPort
+define AP_MSP_VIDEOTX_ENABLED 1
+
+# UART7 — free pads (SERIAL6 in SERIAL_ORDER after UART5)
+PE8 UART7_TX UART7
+PE7 UART7_RX UART7
+define DEFAULT_SERIAL6_PROTOCOL SerialProtocol_None
+
+# UART8 — free pads (SERIAL7)
+PE1 UART8_TX UART8
+PE0 UART8_RX UART8
+define DEFAULT_SERIAL7_PROTOCOL SerialProtocol_None
+
+# Motors — BF MOTOR1–4 on PC6–PC9 TIM3 CH1–4 (AnyleafH7 twin + BIDIR)
+PC6 TIM3_CH1 TIM3 PWM(1) GPIO(50) BIDIR
+PC7 TIM3_CH2 TIM3 PWM(2) GPIO(51)
+PC8 TIM3_CH3 TIM3 PWM(3) GPIO(52) BIDIR
+PC9 TIM3_CH4 TIM3 PWM(4) GPIO(53)
+
+# LED strip (BF PA10 TIM1 CH3). NODMA to protect TIM3 bdshot DMA.
+PA10 TIM1_CH3 TIM1 PWM(5) GPIO(58) NODMA
+
+# Buzzer (BF PD12, BEEPER_INVERTED) — GPIO idle HIGH (active low), not TIM4
+PD12 BUZZER OUTPUT HIGH GPIO(80)
+define HAL_BUZZER_PIN 80
+define DEFAULT_BUZZ_ON_LVL 0
+
+# PE3 — switchable 9V VTX (HDZero PINIO docs). Polarity UNKNOWN.
+# Held LOW at reset; NOT wired to RELAY defaults. Hardware activation blocked
+# until polarity is proven. NOT VERIFIED — DO NOT FLASH.
+PE3 VTX_PWR OUTPUT LOW GPIO(83)
+
+# DMA: protect motor TIM3 and IMU/flash SPI (Anyleaf / Lucid discipline)
+DMA_PRIORITY TIM3* SPI1* SPI2*
+DMA_NOSHARE TIM3* SPI1* SPI2*
+
+# SPI devices — probe both CS with both driver types (one IMU populated per SKU).
+# CS mapping inference (closed BF PR #835): ICM→PB4/PC13, MPU→PB3/PA15.
+SPIDEV icm42688_1 SPI1 DEVID1 GYRO1_CS MODE3  2*MHZ 16*MHZ
+SPIDEV mpu6000_1  SPI1 DEVID1 GYRO1_CS MODE3  1*MHZ  8*MHZ
+SPIDEV icm42688_2 SPI1 DEVID2 GYRO2_CS MODE3  2*MHZ 16*MHZ
+SPIDEV mpu6000_2  SPI1 DEVID2 GYRO2_CS MODE3  1*MHZ  8*MHZ
+SPIDEV dataflash  SPI2 DEVID1 FLASH_CS  MODE3 104*MHZ 104*MHZ
+
+# Orientation UNKNOWN — ROTATION_NONE provisional (NOT VERIFIED — DO NOT FLASH)
+IMU Invensensev3 SPI:icm42688_1 ROTATION_NONE
+IMU Invensense   SPI:mpu6000_1  ROTATION_NONE
+IMU Invensensev3 SPI:icm42688_2 ROTATION_NONE
+IMU Invensense   SPI:mpu6000_2  ROTATION_NONE
+define HAL_DEFAULT_INS_FAST_SAMPLE 1
+
+# No onboard baro in BF target — allow boot without baro; probe I2C pads
+define HAL_BARO_ALLOW_INIT_NO_BARO 1
+define AP_BARO_PROBE_EXTERNAL_I2C_BUSES 1
+
+# External compass probe on I2C1
+define AP_COMPASS_PROBING_ENABLED 1
+define HAL_I2C_INTERNAL_MASK 0
+define HAL_COMPASS_AUTO_ROT_DEFAULT 2
+
+# MSP DisplayPort OSD (no analog OSD chip on Halo)
+define OSD_ENABLED 1
+define HAL_OSD_TYPE_DEFAULT 5
+define HAL_LOGGING_DATAFLASH_ENABLED 1
+
+# Betaflight/X motor order for standard ESCs
+define HAL_FRAME_TYPE_DEFAULT 12
+
+# Save flash on FPV-sized H7
+define AP_SCRIPTING_ENABLED 0
