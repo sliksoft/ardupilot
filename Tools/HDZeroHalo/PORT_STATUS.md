@@ -4,6 +4,13 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-G update (2026-10-18)
+
+`HAL_BARO_ALLOW_INIT_NO_BARO 1` restored so Copter can finish init without a
+baro (standard AP option; default baro prearm skipped). External BMP280/
+MS5611/BMP388 probe mask 1030 retained. No extra arming blockade.
+See `WP2B_G_NO_BARO_RESTORE.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+
 ## WP2B-F update (2026-10-18)
 
 HSE8 software chain reconfirmed for BF 2026.6.2 (`e0b7bb01b`); physical crystal

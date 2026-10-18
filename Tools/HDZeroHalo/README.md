@@ -56,10 +56,12 @@ development branch without touching vehicle code.
 | `WP2B_F_BETAFLIGHT_RECOVERY.md` | Recovery images + DFU plan (untested) |
 | `WP2B_F_FLASH_READINESS.md` | First AP USB-bench gate score |
 | `WP2B_F_FINAL_REPORT.md` | WP2B-F status block |
+| `WP2B_G_NO_BARO_RESTORE.md` | HAL_BARO_ALLOW_INIT_NO_BARO for no-baro startup |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
 **WP2B-D:** ICM `ROTATION_ROLL_180` + MPU `ROTATION_YAW_270` in hwdef.  
-**WP2B-F:** HSE/recovery docs only; `FIRST_AP_BENCH_READINESS = NOT_READY`; `HARDWARE_FLASH_ALLOWED = NO`.
+**WP2B-F:** HSE/recovery docs only; `FIRST_AP_BENCH_READINESS = NOT_READY`.  
+**WP2B-G:** `HAL_BARO_ALLOW_INIT_NO_BARO 1`; external baro probe retained; `HARDWARE_FLASH_ALLOWED = NO`.
 
 ## Outside Git (project root)
 

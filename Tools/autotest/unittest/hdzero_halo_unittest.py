@@ -1,4 +1,4 @@
-"""Offline checks of generated Halo configuration and its barometer arming path.
+"""Offline checks of generated Halo configuration and barometer no-baro path.
 
 AP_FLAKE8_CLEAN
 """
@@ -58,7 +58,7 @@ int main() { return 0; }
 '''
                 self.assertEqual(self.compile_and_run(configuration, program).returncode, 0)
 
-    def barometer_probe(self, defines=()):
+    def barometer_probe(self, *, undef_macro=False):
         source = (ROOT / 'libraries/AP_Arming/AP_Arming.cpp').read_text()
         start = source.index('bool AP_Arming::barometer_checks(bool report)')
         end = source.index('\n#if AP_AIRSPEED_ENABLED', start)
@@ -66,6 +66,10 @@ int main() { return 0; }
         program = '''
 #include <cstddef>
 #include "hwdef.h"
+'''
+        if undef_macro:
+            program += '#undef HAL_BARO_ALLOW_INIT_NO_BARO\n'
+        program += '''
 #define CONFIG_HAL_BOARD 10
 #define HAL_BOARD_SITL 3
 #define MAVLINK_MSG_STATUSTEXT_FIELD_TEXT_LEN 50
@@ -87,7 +91,9 @@ struct AP_Arming {
 };
 '''
         program += source[start:end]
-        program += '''
+        if undef_macro:
+            # Upstream path without the board macro: unhealthy fails, healthy passes.
+            program += '''
 int main() {
     AP_Arming arming;
     if (arming.barometer_checks(true) || AP::baro().calls != 1 || arming.failures != 1) {
@@ -100,13 +106,40 @@ int main() {
     return 0;
 }
 '''
-        return self.compile_and_run('app', program, defines)
+        else:
+            # Board macro present: always true, arming_checks never called.
+            program += '''
+int main() {
+    AP_Arming arming;
+    if (!arming.barometer_checks(true) || AP::baro().calls != 0 || arming.failures != 0) {
+        return 1;
+    }
+    AP::baro().healthy = false;
+    if (!arming.barometer_checks(true) || AP::baro().calls != 0 || arming.failures != 0) {
+        return 2;
+    }
+    return 0;
+}
+'''
+        return self.compile_and_run('app', program)
 
-    def test_barometer_health_reaches_prearm_check(self):
+    def test_hal_baro_allow_init_no_baro_in_generated_config(self):
+        program = '''
+#include "hwdef.h"
+#ifndef HAL_BARO_ALLOW_INIT_NO_BARO
+#error "HAL_BARO_ALLOW_INIT_NO_BARO must be defined for Halo"
+#endif
+int main() { return 0; }
+'''
+        self.assertEqual(self.compile_and_run('app', program).returncode, 0)
+        hwdef = (BOARD / 'hwdef.dat').read_text()
+        self.assertRegex(hwdef, r'define\s+HAL_BARO_ALLOW_INIT_NO_BARO\s+1')
+
+    def test_barometer_prearm_skipped_with_board_macro(self):
         self.assertEqual(self.barometer_probe().returncode, 0)
 
-    def test_probe_detects_previous_barometer_bypass(self):
-        self.assertEqual(self.barometer_probe(('-DHAL_BARO_ALLOW_INIT_NO_BARO=1',)).returncode, 1)
+    def test_upstream_baro_health_path_without_macro(self):
+        self.assertEqual(self.barometer_probe(undef_macro=True).returncode, 0)
 
     def test_external_barometer_and_buzzer_defaults(self):
         program = '''
@@ -114,6 +147,9 @@ int main() {
 static_assert(DEFAULT_BUZZ_ON_LVL == 1, "buzzer must be active high");
 static_assert(AP_BARO_PROBE_EXTERNAL_I2C_BUSES == 1, "external probes required");
 static_assert(HAL_BARO_PROBE_EXT_DEFAULT == ((1 << 1) | (1 << 2) | (1 << 10)), "probe mask");
+#ifndef HAL_BARO_ALLOW_INIT_NO_BARO
+#error "no-baro init macro required"
+#endif
 int main() { return 0; }
 '''
         self.assertEqual(self.compile_and_run('app', program).returncode, 0)
@@ -233,6 +269,8 @@ int main() { return 0; }
         self.assertRegex(hwdef, r'PC8\s+TIM3_CH3\s+TIM3\s+PWM\(3\).*BIDIR')
         self.assertIn('HAL_WITH_BIDIR_DSHOT', header)
         self.assertIn('HAL_BARO_PROBE_EXT_DEFAULT 1030', hwdef)
+        self.assertRegex(hwdef, r'define\s+HAL_BARO_ALLOW_INIT_NO_BARO\s+1')
+        self.assertIn('HAL_BARO_ALLOW_INIT_NO_BARO', header)
         inv = (ROOT / 'libraries/AP_InertialSensor/AP_InertialSensor_Invensense.cpp').read_text()
         self.assertIn('int16_val(data, 1)', inv)
         self.assertIn('int16_val(data, 0)', inv)
