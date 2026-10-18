@@ -1,7 +1,8 @@
 # WP1B_FINAL_REPORT — first HDZeroHalo ArduCopter build
 
 **Date:** 2026-10-18  
-**Parent HEAD:** `ea49cd912e67da1df72f7858a0d1f8543c855205`
+**Parent HEAD:** `ea49cd912e67da1df72f7858a0d1f8543c855205`  
+**WP1B HEAD:** `a8ecfa2edb085bcdeaf82939b65669445f01bcaf`
 
 ```text
 WP1B_STATUS = PARTIAL
