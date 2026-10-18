@@ -31,7 +31,7 @@ FILES_CHANGED =
   Tools/bootloaders/HDZeroHalo_bl.{bin,elf,hex}
 
 COMMIT_SHA = e17edd424ff68f65ae4b0a69a408886a1e83b5ba
-PUSH_STATUS = PENDING
+PUSH_STATUS = PUSHED_origin_board_hdzero-halo
 
 REMAINING_HARDWARE_BLOCKERS =
   physical HSE; DFU recovery exercise; gyro polarity; MPU SKU six-face;
