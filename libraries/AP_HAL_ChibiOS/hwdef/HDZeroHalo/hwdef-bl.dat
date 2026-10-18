@@ -45,5 +45,4 @@ PD12 BUZZER OUTPUT LOW
 # Inactive software level after GPIO initialisation; reset/ROM DFU unverified.
 PE3 VTX_PWR OUTPUT LOW
 
-# Enable STM32 ROM DFU path from AP bootloader (peer pattern)
-ENABLE_DFU_BOOT 1
+# Pinned ChibiOS startup has no software DFU entry hook; use physical BOOT.

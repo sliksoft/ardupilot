@@ -12,6 +12,12 @@ Until HSE frequency, flash layout vs factory BF, IMU rotation, VBAT scale, and
 PE3 9V polarity are verified on hardware, treat all binaries as
 **NOT VERIFIED — DO NOT FLASH**. Recovery remains STM32 DFU → Betaflight.
 
+ROM DFU recovery uses the physical BOOT button at USB power-on. Software
+ROM-DFU entry is disabled in both application and bootloader: the pinned
+ChibiOS startup does not call `__entry_hook`. Normal AP USB bootloading is
+separate. See `Tools/HDZeroHalo/WP2B_H_DFU_ENTRY.md` for offline evidence;
+the physical recovery procedure remains untested on this FC.
+
 ## Build (offline)
 
 ```sh
