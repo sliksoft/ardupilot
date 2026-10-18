@@ -37,8 +37,8 @@ OPEN_BLOCKERS =
   HSE_physical_unproved;
   gyro_polarity_incomplete;
   no_baro_for_normal_copter_start
-COMMIT_SHA = (set after commit)
-PUSH_STATUS = (set after push)
+COMMIT_SHA = aedc291c4262d6b38e3234da64e8fe5c127eb1ea
+PUSH_STATUS = PENDING_PUSH
 
 HARDWARE_FLASH_ALLOWED = NO
 ```
