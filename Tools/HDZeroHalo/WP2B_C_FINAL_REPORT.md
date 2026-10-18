@@ -49,7 +49,7 @@ GYRO_SIGN_PROOF = OPEN (optional)
 HARDWARE_FLASH_ALLOWED = NO
 
 HEAD_SHA = ee31671c3bc652d5d32a18d26a356ec61b6eab51
-PUSH_STATUS = PENDING
+PUSH_STATUS = PUSHED_origin_board_hdzero-halo
 NEXT_ACTION =
   Human decision whether to edit hwdef ICM (and MPU composition) to ROLL_180
   before any flash; optional gyro sign MSP test; crystal/DFU gates unchanged;
