@@ -6,10 +6,10 @@ Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
 ## WP2B-C update (2026-10-18)
 
-Read-only MSP six-face Acc on the same Halo (`evidence/wp2b-c/`). MSP X=forward
-(USB aft) and Z=up match; Y vs board-right ambiguous. Retain ICM
-`ROTATION_NONE`. Pre-flash gates listed in `WP2B_C_HARDWARE_GATES.md`.
-**HARDWARE_FLASH_ALLOWED = NO**. Detail: `WP2B_C_*.md`.
+Read-only MSP six-face Acc (`evidence/wp2b-c/`). MSP matches BF body
+X-fwd/Y-left/Z-up; AP FRD map is `ROTATION_ROLL_180` (indicated). Hwdef still
+`ROTATION_NONE` — incorrect for FRD; not edited this WP. See
+`WP2B_C_FRAME_RECONCILIATION.md`. **HARDWARE_FLASH_ALLOWED = NO**.
 
 ## WP2B-B update (2026-10-18)
 

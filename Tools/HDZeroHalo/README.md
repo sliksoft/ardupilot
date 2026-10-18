@@ -46,12 +46,13 @@ development branch without touching vehicle code.
 | `WP2B_B_CLI_IDENTITY.md` | Live BF CLI identity dump |
 | `WP2B_B_HARDWARE_COMPARE.md` | Live FC vs AP hwdef |
 | `WP2B_B_FINAL_REPORT.md` | WP2B-B status block |
-| `WP2B_C_SENSOR_ORIENTATION.md` | Six-face MSP Acc vs ICM ROTATION_NONE |
+| `WP2B_C_SENSOR_ORIENTATION.md` | Six-face MSP Acc (corrected frame verdict) |
+| `WP2B_C_FRAME_RECONCILIATION.md` | BF Y-left/Z-up vs AP FRD; ROLL_180 indicated |
 | `WP2B_C_HARDWARE_GATES.md` | Remaining conditions before first AP flash |
 | `WP2B_C_FINAL_REPORT.md` | WP2B-C status block |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
-**WP2B-C:** six-face Acc partial; retain `ROTATION_NONE`; `HARDWARE_FLASH_ALLOWED = NO`.
+**WP2B-C:** Acc indicates ICM `ROTATION_ROLL_180`; hwdef still `NONE`; `HARDWARE_FLASH_ALLOWED = NO`.
 
 ## Outside Git (project root)
 

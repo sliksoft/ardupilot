@@ -23,7 +23,7 @@ Evidence classes:
 | G5 | Physical HSE = 8 MHz | **UNPROVED** | BF + AP compile HSE8 / 480 MHz; live `CLK=480MHz` is software report only; no crystal photo/scope |
 | G6 | MCU identity for DFU notes | **PARTIAL** | Class STM32H743xx + UID live; package marking / ROM version / option bytes **UNPROVED** |
 | G7 | IMU SKU + CS | **PROVED_LIVE** | ICM42688P on GYRO_1 PB4/PC13; MPU not populated |
-| G8 | IMU absolute orientation | **PARTIAL** | Six-face Acc: X/Z match USB-aft Z-up; Y vs board-right ambiguous; retain `ROTATION_NONE`; optional silk photo / gyro signs |
+| G8 | IMU absolute orientation | **PARTIAL — ROTATION INDICATED** | Six-face Acc matches BF X-fwd/Y-left/Z-up; AP FRD needs `ROTATION_ROLL_180` (documented, **hwdef still `NONE`**); optional silk photo + gyro signs; see `WP2B_C_FRAME_RECONCILIATION.md` |
 | G9 | External barometer | **UNPROVED / REQUIRED for flight** | No onboard baro; AP expects external I²C baro or stays in USB config-error path |
 | G10 | PE3 / 9V rail behaviour | **UNPROVED** | Live BF has no PINIO on PE3; AP holds PE3 LOW; electrical table across reset/DFU unknown |
 | G11 | VBAT / current calibration | **UNPROVED** | Nominal scales match (110/10/1, ibata 100); no pack / DMM |
@@ -42,13 +42,14 @@ Evidence classes:
 - ICM42688P @ PB4 / PC13; second gyro slot unused  
 - SPI flash W25Q128 16 MiB  
 - Pin roles for IMU/flash/UART1/UART5/ADC defaults match AP hwdef  
-- Six-face accelerometer: X forward (USB aft), Z up (components); Y sign vs silk unconfirmed  
+- Six-face accelerometer: MSP = BF X-fwd / Y-left / Z-up (USB aft, components up)  
 
 ### Software agreement only (not physical proof)
 
 - HSE 8 MHz compile path (BF Makefile + AP `OSCILLATOR_HZ 8000000`)  
 - SYSCLK 480 MHz reported by BF `status`  
-- BF CW0 / board align 0 ↔ AP ICM `ROTATION_NONE` relative strategy  
+- BF CW0 MSP body ↔ AP FRD via `ROTATION_ROLL_180` (indicated; hwdef not yet updated)  
+- Prior relative ICM/`NONE` vs MPU/`ROLL_180_YAW_90` raw-register normalisation (WP2A) — not AP FRD  
 - PE3 active-HIGH PINIO semantics in OEM/BF docs (not mapped on this dump)  
 - Flash layout difference BF vs AP (known; dual-boot impossible)  
 - OEM DFU procedure text  
@@ -57,7 +58,8 @@ Evidence classes:
 
 - Crystal measurement or marking photo  
 - Package / option bytes / ROM DFU round-trip  
-- Y-axis silk confirmation (photo) and/or signed gyro rotations  
+- Human decision to apply ICM `ROTATION_ROLL_180` (and MPU composition) in hwdef  
+- Optional silk photo + signed gyro rotations before trusting first AP attitude  
 - External baro fit for any flight or baro-using modes  
 - PE3/9V meter across power states  
 - Battery ADC with LiPo + DMM  
@@ -72,7 +74,7 @@ Not an authorization — a checklist:
 2. **G2** BF dump archived (done for this unit in WP2B-B; re-diff if config changed).  
 3. **G3–G4** operator can perform ROM DFU restore to a known Halo BF image.  
 4. **G5** accept provisional HSE8 **or** obtain crystal evidence (risk acknowledgment if still unknown).  
-5. **G7** already proved for this SKU; **G8** retain `ROTATION_NONE` or resolve Y with photo before trusting attitude.  
+5. **G7** already proved for this SKU; **G8** plan `ROTATION_ROLL_180` for ICM (docs indicate; hwdef still `NONE`) before trusting AP attitude.  
 6. **G9** external baro available **or** accept USB config-error-only bring-up.  
 7. **G16** props off; no VTX 9V experiments on first boot.  
 

@@ -1,90 +1,89 @@
 # WP2B_C_FINAL_REPORT — sensor orientation & hardware flash gates
 
-**Date:** 2026-10-18  
+**Date:** 2026-10-18 (frame correction appended same day)  
 **Branch:** `board/hdzero-halo`  
 **Start-HEAD:** `bb0662895b1095453d881484fbef7f2222bd17be`  
-**Method:** read-only MSP on live Halo (`/dev/ttyACM0` via usbipd→WSL2); prior WP2A / WP2B-A / WP2B-B docs  
-**Policy:** no flash, DFU, CLI `set`/`save`, calibration, GPIO/PINIO, motors, or ArduPilot source edits  
+**Method:** read-only MSP; source review BF 4.5.1 + AP Invensensev3; independent math check  
+**Policy:** no flash, DFU, CLI writes, calibration, GPIO/PINIO, motors, or ArduPilot firmware edits  
 
-Evidence: `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp2b-c/`  
-Detail: `WP2B_C_SENSOR_ORIENTATION.md`, `WP2B_C_HARDWARE_GATES.md`
+Evidence: `evidence/wp2b-c/`  
+Detail: `WP2B_C_SENSOR_ORIENTATION.md`, `WP2B_C_FRAME_RECONCILIATION.md`, `WP2B_C_HARDWARE_GATES.md`
 
 ## Main conclusion
 
-**On this ICM42688P Halo, six-face MSP accelerometer data prove MSP X = forward (USB aft) and Z = up (component side). Y versus board-right is ambiguous (measured opposite to the assumed right). That is not enough evidence to change ArduPilot’s ICM `ROTATION_NONE`. Physical HSE, package/option bytes, PE3/9V, ADC calibration, AP DShot, and DFU recovery remain unproved. First ArduPilot flash is still forbidden.**
+**Six-face MSP Acc on this ICM42688P Halo matches Betaflight body X-forward / Y-left / Z-up (CW0). ArduPilot FRD is X-forward / Y-right / Z-down. The proper map is `ROTATION_ROLL_180`. Current hwdef `ROTATION_NONE` is therefore not correct for AP body axes. This WP documents that finding only — it does not change firmware. Physical HSE, DFU recovery, PE3/9V, ADC cal, and AP DShot remain unproved. Flash remains forbidden.**
+
+**Correction:** the first WP2B-C text that called Y “ambiguous” used a mistaken Y-right assumption; the measurements are consistent with Y-left.
 
 ## Status block
 
 ```text
-WP2B_C_STATUS = PASS_ORIENTATION_PARTIAL_GATES
+WP2B_C_STATUS = PASS_ORIENTATION_FRAME_CORRECTED
 
 CONNECTION = PASS (/dev/ttyACM0 0483:5740 HDZERO_HALO)
 READ_ONLY = YES
 FIRMWARE_FLASHED = NO
 CONFIG_CHANGED = NO
-MSP_USED = YES (API 1.48; RAW_IMU only + identity GETs)
+HWDEF_CHANGED = NO
+MSP_USED = YES (API 1.48; RAW_IMU + identity GETs)
 
 MCU = STM32H743xx
 MCU_ID = 004000383533510f39303730
-BF_VERSION = 2026.6.2 (e0b7bb0) MSP 1.48
-BF_TARGET = HDZERO_HALO / HDZO
-IMU = ICM42688P (unchanged from WP2B-B)
+BF_VERSION = 2026.6.2 MSP 1.48
+IMU = ICM42688P
 
 SIX_FACE_ACC = COMPLETE
-  X_FORWARD_USB_AFT = MATCH
-  Z_UP_COMPONENTS = MATCH
-  Y_BOARD_RIGHT = AMBIGUOUS
-AP_ICM_ROTATION = RETAIN_ROTATION_NONE
-ORIENTATION_HWDEF_CHANGE = NOT_INDICATED
+  MSP_FRAME = BF_X_FWD_Y_LEFT_Z_UP (MATCH 6/6)
+  AP_FRD_MAP = ROTATION_ROLL_180 (INDICATED)
+  AP_ICM_HWDEF = ROTATION_NONE (STILL_PRESENT; INCORRECT_FOR_FRD)
+  PRIOR_Y_AMBIGUOUS = RETRACTED
 
-HSE_PHYSICAL = STILL_UNPROVED (CLK=480MHz software-reported only)
-MCU_PACKAGE_OPTBYTES_ROM = STILL_UNPROVED
+HSE_PHYSICAL = STILL_UNPROVED
 DFU_RECOVERY = DOCUMENTED_UNTESTED
 PE3_9V = STILL_UNPROVED
 VBAT_IBATA_CAL = STILL_UNPROVED
 AP_DSHOT_HW = STILL_UNPROVED
 EXTERNAL_BARO = REQUIRED_FOR_FLIGHT_NOT_FITTED
+GYRO_SIGN_PROOF = OPEN (optional)
 
 HARDWARE_FLASH_ALLOWED = NO
 
-HEAD_SHA = ca619b8175d2b682ed2d34ba0c44d48d80978b36
-PUSH_STATUS = PUSHED_origin_board_hdzero-halo
+HEAD_SHA = PENDING_CORRECTION_COMMIT
+PUSH_STATUS = PENDING
 NEXT_ACTION =
-  Optional: photo IMU/silk for Y confirmation; crystal photo/scope;
-  keep BF archive; human gate before any flash — do not start WP3 automatically
+  Human decision whether to edit hwdef ICM (and MPU composition) to ROLL_180
+  before any flash; optional gyro sign MSP test; crystal/DFU gates unchanged;
+  do not start WP3 automatically
 ```
 
-## What this WP closed
+## What this WP closed / corrected
 
 | Item | Result |
 | ---- | ------ |
-| MSP identity without config change | PASS — same UID/target as WP2B-B |
-| Live Acc/Gyro stream | PASS — AccZ≈+1 g at rest top-up; gyro quiet |
-| Absolute Acc axes (X,Z) | MATCH USB-aft / components-up |
-| Absolute Acc Y vs silk right | AMBIGUOUS |
-| ICM `ROTATION_NONE` change needed? | **No confident bug shown** |
-| Concrete pre-flash gate list | `WP2B_C_HARDWARE_GATES.md` |
+| MSP identity | PASS (same UID as WP2B-B) |
+| Live Acc/Gyro stream | PASS |
+| Absolute Acc vs BF body | MATCH Y-left Z-up |
+| BF↔AP frame map | `ROLL_180` indicated |
+| `ROTATION_NONE` for AP FRD | **Incorrect** (documented; not edited) |
+| Y-ambiguous claim | **Retracted** |
+| Pre-flash gate list | Updated in `WP2B_C_HARDWARE_GATES.md` |
 
-## HSE / MCU / recovery (read-only follow-up)
+## HSE / MCU / recovery (unchanged)
 
-| Topic | Update in WP2B-C |
-| ----- | ---------------- |
-| HSE | No new physical proof. Live BF still reports 480 MHz SYSCLK; USB uses BF HSI48 path so enumeration ≠ crystal proof (WP2B-A). AP remains more HSE-sensitive for USB. |
-| MCU | UID + STM32H743 / HDZERO_HALO / HDZO reconfirmed via MSP board info. Package marking, flash option bytes, ROM bootloader version still unread. |
-| Recovery | No DFU attempted. OEM BOOT procedure and AP/BF layout conflict unchanged; BF 2026.6.2 dump already archived in WP2B-B. |
+No new physical HSE, option-byte, or DFU evidence. UID/board identity reconfirmed via MSP.
 
 ## Safety compliance
 
-- Only MSP read allowlist (identity + `MSP_RAW_IMU`)  
-- No CLI `#` session for config; no `set`/`save`/`defaults`/`bl`/`dfu`  
-- No motor, ESC, LiPo, or PINIO switching  
-- No ArduPilot hwdef / driver edits  
-- Local `AGENTS.md`, `CLAUDE.md`, `.claude/`, `.serena/` left unstaged  
+- MSP read allowlist only  
+- No CLI config mutation; no DFU/flash  
+- No ArduPilot source/hwdef edits in this correction  
+- `AGENTS.md`, `CLAUDE.md`, `.claude/`, `.serena/` unstaged  
 
 ## Documents
 
 | File | Topic |
 | ---- | ----- |
-| `WP2B_C_SENSOR_ORIENTATION.md` | Six-face data vs `ROTATION_NONE` |
+| `WP2B_C_SENSOR_ORIENTATION.md` | Six-face table + corrected verdict |
+| `WP2B_C_FRAME_RECONCILIATION.md` | BF vs AP axes, MSP path, ROLL_180 |
 | `WP2B_C_HARDWARE_GATES.md` | Remaining flash conditions |
 | `WP2B_C_FINAL_REPORT.md` | This status block |
