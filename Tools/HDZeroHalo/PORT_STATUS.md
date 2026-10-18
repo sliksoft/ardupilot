@@ -4,6 +4,14 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-B update (2026-10-18)
+
+Live read-only CLI on `/dev/ttyACM0` (`0483:5740`). Unit is **HDZERO_HALO** on
+**BF 2026.6.2** with **ICM42688P** @ PB4, W25Q128, CRSF UART1, MSP DP UART5,
+vbat 110/10/1, ibata 100. PINIO/PE3 not mapped on this dump. Pinmap matches AP
+hwdef; absolute IMU/HSE/9V/AP-DShot still open. **HARDWARE_FLASH_ALLOWED = NO**.
+Detail: `WP2B_B_*.md`.
+
 ## WP2B-A update (2026-10-18)
 
 Betaflight forensic research only (`WP2B_A_*.md`). Local BF 4.5.1 Halo build

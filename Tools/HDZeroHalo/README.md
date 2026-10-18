@@ -42,9 +42,13 @@ development branch without touching vehicle code.
 | `WP2B_A_BOOTLOADER_RECOVERY.md` | Flash maps and DFU return-to-BF plan |
 | `WP2B_A_FINAL_REPORT.md` | WP2B-A status block |
 | `WP2B_A_INDEPENDENT_REVIEW.md` | Read-only verification of key claims |
+| `WP2B_B_CONNECTION.md` | WSL2 `/dev/ttyACM0` access (WP2B-B) |
+| `WP2B_B_CLI_IDENTITY.md` | Live BF CLI identity dump |
+| `WP2B_B_HARDWARE_COMPARE.md` | Live FC vs AP hwdef |
+| `WP2B_B_FINAL_REPORT.md` | WP2B-B status block |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
-**WP2B-A:** `HARDWARE_FLASH_ALLOWED = NO` (research only; no firmware changes).
+**WP2B-B:** live read-only identity PASS; `HARDWARE_FLASH_ALLOWED = NO`.
 
 ## Outside Git (project root)
 
