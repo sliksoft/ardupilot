@@ -69,7 +69,7 @@ HARDWARE_QUESTIONS_REMAINING = (see table below)
 HARDWARE_FLASH_ALLOWED = NO
 
 HEAD_SHA = c637d861a616fc91700ad2f7e686e793f0ee9c6b
-PUSH_STATUS = (set at push)
+PUSH_STATUS = PENDING_PUSH
 NEXT_ACTION =
   Read-only USB identity on physical Halo (MCU UID, BF version, gyro WHO_AM_I, RCC if available);
   photograph crystal/IMU; scope or OEM crystal confirmation before any flash approval
