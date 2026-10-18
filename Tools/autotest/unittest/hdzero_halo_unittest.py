@@ -130,6 +130,114 @@ int main() { return 0; }
         self.assertEqual(len(streams), 15)
         self.assertNotIn('STM32_TIM_TIM1_UP_DMA_STREAM', streams)
 
+    def test_imu_probe_rotations_frd(self):
+        """Both CS variants: ICM ROLL_180, MPU YAW_270 (WP2B-D)."""
+        header = (self.outputs['app'] / 'hwdef.h').read_text()
+        self.assertIn(
+            'AP_InertialSensor_Invensensev3::probe(*this,hal.spi->get_device("icm42688_1"),ROTATION_ROLL_180)',
+            header)
+        self.assertIn(
+            'AP_InertialSensor_Invensensev3::probe(*this,hal.spi->get_device("icm42688_2"),ROTATION_ROLL_180)',
+            header)
+        self.assertIn(
+            'AP_InertialSensor_Invensense::probe(*this,hal.spi->get_device("mpu6000_1"),ROTATION_YAW_270)',
+            header)
+        self.assertIn(
+            'AP_InertialSensor_Invensense::probe(*this,hal.spi->get_device("mpu6000_2"),ROTATION_YAW_270)',
+            header)
+        self.assertNotIn('icm42688_1"),ROTATION_NONE)', header)
+        self.assertNotIn('mpu6000_1"),ROTATION_ROLL_180_YAW_90)', header)
+
+    def test_roll_180_matrix_and_determinant(self):
+        """ROTATION_ROLL_180 is (x,y,z)->(x,-y,-z); det=+1 (matches AP_Math)."""
+        # Mirror libraries/AP_Math/vector3.cpp ROTATION_ROLL_180 and test_math.cpp
+        def roll180(v):
+            x, y, z = v
+            return (x, -y, -z)
+
+        self.assertEqual(roll180((1, 1, 1)), (1, -1, -1))
+        self.assertEqual(roll180((1, 2, 3)), (1, -2, -3))
+        # Columns of R = diag(1,-1,-1); det = +1
+        cols = [roll180((1, 0, 0)), roll180((0, 1, 0)), roll180((0, 0, 1))]
+        det = (
+            cols[0][0] * (cols[1][1] * cols[2][2] - cols[1][2] * cols[2][1])
+            - cols[0][1] * (cols[1][0] * cols[2][2] - cols[1][2] * cols[2][0])
+            + cols[0][2] * (cols[1][0] * cols[2][1] - cols[1][1] * cols[2][0])
+        )
+        self.assertEqual(det, 1)
+        math_test = (ROOT / 'libraries/AP_Math/tests/test_math.cpp').read_text()
+        self.assertIn('TEST_ROTATION(ROTATION_ROLL_180, 1, -1, -1)', math_test)
+        self.assertIn('TEST_ROTATION(ROTATION_YAW_270, 1, -1, 1)', math_test)
+
+    def test_six_face_msp_to_frd(self):
+        """WP2B-C measured BF-body Acc dominants map to AP FRD under ROLL_180."""
+        # Dominant unit vectors from evidence/wp2b-c (BF Y-left Z-up)
+        faces = {
+            'flat_top_up': (0.0, 0.0, 1.0),
+            'flat_bottom_up': (0.0, 0.0, -1.0),
+            'right_side_down': (0.0, 1.0, 0.0),
+            'left_side_down': (0.0, -1.0, 0.0),
+            'nose_down': (-1.0, 0.0, 0.0),
+            'nose_up': (1.0, 0.0, 0.0),
+        }
+        expected_frd = {
+            'flat_top_up': (0.0, 0.0, -1.0),
+            'flat_bottom_up': (0.0, 0.0, 1.0),
+            'right_side_down': (0.0, -1.0, 0.0),
+            'left_side_down': (0.0, 1.0, 0.0),
+            'nose_down': (-1.0, 0.0, 0.0),
+            'nose_up': (1.0, 0.0, 0.0),
+        }
+
+        def roll180(v):
+            return (v[0], -v[1], -v[2])
+
+        for name, bf in faces.items():
+            with self.subTest(face=name):
+                self.assertEqual(roll180(bf), expected_frd[name])
+
+    def test_mpu_driver_compose_yaw270_equals_roll180(self):
+        """Invensense (y,x,-z) then YAW_270 == ROLL_180(raw)."""
+        def a_mpu(v):
+            x, y, z = v
+            return (y, x, -z)
+
+        def yaw270(v):
+            x, y, z = v
+            return (y, -x, z)
+
+        def roll180(v):
+            x, y, z = v
+            return (x, -y, -z)
+
+        for r in ((1, 0, 0), (0, 1, 0), (0, 0, 1), (1, 2, 3), (-4, 5, -6)):
+            with self.subTest(r=r):
+                self.assertEqual(yaw270(a_mpu(r)), roll180(r))
+
+    def test_peripheral_config_unchanged_by_imu_rotation(self):
+        """Motors/DMA/UART/SPI/baro pins must not change with IMU rotation fix."""
+        header = (self.outputs['app'] / 'hwdef.h').read_text()
+        hwdef = (BOARD / 'hwdef.dat').read_text()
+        self.assertIn('HAL_BARO_PROBE_EXT_DEFAULT', header)
+        self.assertIn('STM32_TIM_TIM3_UP_DMA_STREAM', header)
+        self.assertRegex(hwdef, r'PC6\s+TIM3_CH1\s+TIM3')
+        self.assertRegex(hwdef, r'PC7\s+TIM3_CH2\s+TIM3')
+        self.assertRegex(hwdef, r'PC8\s+TIM3_CH3\s+TIM3')
+        self.assertRegex(hwdef, r'PC9\s+TIM3_CH4\s+TIM3')
+        self.assertRegex(hwdef, r'PB6\s+USART1_TX\s+USART1')
+        self.assertRegex(hwdef, r'PB7\s+USART1_RX\s+USART1')
+        self.assertRegex(hwdef, r'PC12\s+UART5_TX\s+UART5')
+        self.assertRegex(hwdef, r'PD2\s+UART5_RX\s+UART5')
+        self.assertRegex(hwdef, r'PA5\s+SPI1_SCK\s+SPI1')
+        self.assertRegex(hwdef, r'PC6\s+TIM3_CH1\s+TIM3\s+PWM\(1\).*BIDIR')
+        self.assertRegex(hwdef, r'PC8\s+TIM3_CH3\s+TIM3\s+PWM\(3\).*BIDIR')
+        self.assertIn('HAL_WITH_BIDIR_DSHOT', header)
+        self.assertIn('HAL_BARO_PROBE_EXT_DEFAULT 1030', hwdef)
+        inv = (ROOT / 'libraries/AP_InertialSensor/AP_InertialSensor_Invensense.cpp').read_text()
+        self.assertIn('int16_val(data, 1)', inv)
+        self.assertIn('int16_val(data, 0)', inv)
+        self.assertIn('-int16_val(data, 2)', inv)
+
 
 if __name__ == '__main__':
     unittest.main()

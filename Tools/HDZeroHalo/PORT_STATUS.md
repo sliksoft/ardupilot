@@ -4,12 +4,17 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-D update (2026-10-18)
+
+Hwdef ICM `ROTATION_ROLL_180`, MPU `ROTATION_YAW_270` (MPU SKU untested).
+Offline configure/copter/bootloader + Halo unittests PASS. See
+`WP2B_D_IMU_ROTATION_FIX.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+
 ## WP2B-C update (2026-10-18)
 
 Read-only MSP six-face Acc (`evidence/wp2b-c/`). MSP matches BF body
-X-fwd/Y-left/Z-up; AP FRD map is `ROTATION_ROLL_180` (indicated). Hwdef still
-`ROTATION_NONE` — incorrect for FRD; not edited this WP. See
-`WP2B_C_FRAME_RECONCILIATION.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+X-fwd/Y-left/Z-up; FRD map `ROTATION_ROLL_180` — applied in WP2B-D.
+See `WP2B_C_FRAME_RECONCILIATION.md`.
 
 ## WP2B-B update (2026-10-18)
 

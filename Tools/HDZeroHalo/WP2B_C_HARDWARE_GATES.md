@@ -23,7 +23,7 @@ Evidence classes:
 | G5 | Physical HSE = 8 MHz | **UNPROVED** | BF + AP compile HSE8 / 480 MHz; live `CLK=480MHz` is software report only; no crystal photo/scope |
 | G6 | MCU identity for DFU notes | **PARTIAL** | Class STM32H743xx + UID live; package marking / ROM version / option bytes **UNPROVED** |
 | G7 | IMU SKU + CS | **PROVED_LIVE** | ICM42688P on GYRO_1 PB4/PC13; MPU not populated |
-| G8 | IMU absolute orientation | **PARTIAL — ROTATION INDICATED** | Six-face Acc matches BF X-fwd/Y-left/Z-up; AP FRD needs `ROTATION_ROLL_180` (documented, **hwdef still `NONE`**); optional silk photo + gyro signs; see `WP2B_C_FRAME_RECONCILIATION.md` |
+| G8 | IMU absolute orientation | **SOFTWARE_APPLIED / HW_PARTIAL** | Hwdef ICM `ROTATION_ROLL_180`, MPU `YAW_270` (WP2B-D); Acc six-face proved ICM only; gyro polarity + MPU SKU + first AP AHRS still open |
 | G9 | External barometer | **UNPROVED / REQUIRED for flight** | No onboard baro; AP expects external I²C baro or stays in USB config-error path |
 | G10 | PE3 / 9V rail behaviour | **UNPROVED** | Live BF has no PINIO on PE3; AP holds PE3 LOW; electrical table across reset/DFU unknown |
 | G11 | VBAT / current calibration | **UNPROVED** | Nominal scales match (110/10/1, ibata 100); no pack / DMM |

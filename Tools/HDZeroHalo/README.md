@@ -50,9 +50,10 @@ development branch without touching vehicle code.
 | `WP2B_C_FRAME_RECONCILIATION.md` | BF Y-left/Z-up vs AP FRD; ROLL_180 indicated |
 | `WP2B_C_HARDWARE_GATES.md` | Remaining conditions before first AP flash |
 | `WP2B_C_FINAL_REPORT.md` | WP2B-C status block |
+| `WP2B_D_IMU_ROTATION_FIX.md` | Applied ICM ROLL_180 / MPU YAW_270 |
 
 **Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
-**WP2B-C:** Acc indicates ICM `ROTATION_ROLL_180`; hwdef still `NONE`; `HARDWARE_FLASH_ALLOWED = NO`.
+**WP2B-D:** ICM `ROTATION_ROLL_180` + MPU `ROTATION_YAW_270` in hwdef; `HARDWARE_FLASH_ALLOWED = NO`.
 
 ## Outside Git (project root)
 

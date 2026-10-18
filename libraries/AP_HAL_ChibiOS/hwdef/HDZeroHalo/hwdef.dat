@@ -155,12 +155,15 @@ SPIDEV icm42688_2 SPI1 DEVID2 GYRO2_CS MODE3  2*MHZ 16*MHZ
 SPIDEV mpu6000_2  SPI1 DEVID2 GYRO2_CS MODE3  1*MHZ  8*MHZ
 SPIDEV dataflash  SPI2 DEVID1 FLASH_CS  MODE3 104*MHZ 104*MHZ
 
-# Common raw-register frame: cancel MPU driver's (y,x,-z) transformation.
-# Absolute mounting orientation remains unverified for both SKUs — DO NOT FLASH.
-IMU Invensensev3 SPI:icm42688_1 ROTATION_NONE
-IMU Invensense   SPI:mpu6000_1  ROTATION_ROLL_180_YAW_90
-IMU Invensensev3 SPI:icm42688_2 ROTATION_NONE
-IMU Invensense   SPI:mpu6000_2  ROTATION_ROLL_180_YAW_90
+# ICM: raw XYZ == BF body (CW0, X-fwd/Y-left/Z-up). Map to AP FRD with ROLL_180
+# (x,y,z)->(x,-y,-z). Proved on live ICM42688P @ PB4 via WP2B-C six-face Acc.
+# MPU: driver applies (y,x,-z); ROTATION_YAW_270 then equals ROLL_180(raw) so both
+# SKUs share AP FRD if packages share the same register-to-board mounting as the
+# ICM unit. MPU SKU not physically tested — DO NOT FLASH without MPU six-face.
+IMU Invensensev3 SPI:icm42688_1 ROTATION_ROLL_180
+IMU Invensense   SPI:mpu6000_1  ROTATION_YAW_270
+IMU Invensensev3 SPI:icm42688_2 ROTATION_ROLL_180
+IMU Invensense   SPI:mpu6000_2  ROTATION_YAW_270
 define HAL_DEFAULT_INS_FAST_SAMPLE 1
 
 # External barometer required. Without one, enter the standard USB config-error

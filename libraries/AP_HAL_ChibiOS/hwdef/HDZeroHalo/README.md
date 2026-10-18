@@ -54,8 +54,10 @@ detected barometer remains subject to standard prearm checks.
 
 ## IMU orientation
 
-Both gyro SKUs remain probed on both chip selects. MPU probes apply
-`ROTATION_ROLL_180_YAW_90` to cancel the driver's internal `(y,x,-z)` mapping;
-ICM42688 probes retain `ROTATION_NONE`. This only aligns their raw-register
-frames. Absolute mounting orientation and signed accel/gyro responses on each
-SKU remain hardware blockers. See `Tools/HDZeroHalo/WP2A_IMU_VBAT.md`.
+Both gyro SKUs remain probed on both chip selects. ICM42688 probes use
+`ROTATION_ROLL_180` (BF body X-fwd/Y-left/Z-up → AP FRD), proved on the live
+ICM unit via WP2B-C six-face Acc. MPU probes use `ROTATION_YAW_270` so that
+after the driver's `(y,x,-z)` remap the composed map equals the same
+`ROLL_180(raw)` FRD target; the MPU SKU itself is **not** physically qualified.
+Gyro rate polarity and first AP AHRS check remain open.
+See `Tools/HDZeroHalo/WP2B_D_IMU_ROTATION_FIX.md`.
