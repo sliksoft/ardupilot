@@ -11,7 +11,10 @@ Detail: `WP2B_C_SENSOR_ORIENTATION.md`, `WP2B_C_FRAME_RECONCILIATION.md`, `WP2B_
 
 ## Main conclusion
 
-**Six-face MSP Acc on this ICM42688P Halo matches Betaflight body X-forward / Y-left / Z-up (CW0). ArduPilot FRD is X-forward / Y-right / Z-down. The proper map is `ROTATION_ROLL_180`. Current hwdef `ROTATION_NONE` is therefore not correct for AP body axes. This WP documents that finding only — it does not change firmware. Physical HSE, DFU recovery, PE3/9V, ADC cal, and AP DShot remain unproved. Flash remains forbidden.**
+**Six-face MSP Acc on this ICM42688P Halo matches Betaflight body X-forward / Y-left / Z-up (CW0). ArduPilot FRD is X-forward / Y-right / Z-down. The proper map is `ROTATION_ROLL_180`.**
+
+> **Historical note (WP2B-C as executed):** this work package documented the finding only and did **not** edit firmware.  
+> **Superseded by WP2B-D:** hwdef now uses ICM `ROTATION_ROLL_180` and MPU `ROTATION_YAW_270`. Treat status lines below that still say `ROTATION_NONE` as the WP2B-C-time snapshot, not current tree state.
 
 **Correction:** the first WP2B-C text that called Y “ambiguous” used a mistaken Y-right assumption; the measurements are consistent with Y-left.
 
@@ -35,7 +38,7 @@ IMU = ICM42688P
 SIX_FACE_ACC = COMPLETE
   MSP_FRAME = BF_X_FWD_Y_LEFT_Z_UP (MATCH 6/6)
   AP_FRD_MAP = ROTATION_ROLL_180 (INDICATED)
-  AP_ICM_HWDEF = ROTATION_NONE (STILL_PRESENT; INCORRECT_FOR_FRD)
+  AP_ICM_HWDEF = ROTATION_NONE (WP2B-C SNAPSHOT; SUPERSEDED_BY_WP2B-D_ROLL_180)
   PRIOR_Y_AMBIGUOUS = RETRACTED
 
 HSE_PHYSICAL = STILL_UNPROVED
@@ -64,7 +67,7 @@ NEXT_ACTION =
 | Live Acc/Gyro stream | PASS |
 | Absolute Acc vs BF body | MATCH Y-left Z-up |
 | BF↔AP frame map | `ROLL_180` indicated |
-| `ROTATION_NONE` for AP FRD | **Incorrect** (documented; not edited) |
+| `ROTATION_NONE` for AP FRD | **Incorrect** at WP2B-C; **fixed in WP2B-D** (`ROLL_180`) |
 | Y-ambiguous claim | **Retracted** |
 | Pre-flash gate list | Updated in `WP2B_C_HARDWARE_GATES.md` |
 

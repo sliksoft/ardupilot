@@ -18,9 +18,9 @@ Evidence classes:
 | - | ---- | ------ | ----- |
 | G1 | Human flash approval | **UNPROVED / REQUIRED** | Explicit operator authorization; `HARDWARE_FLASH_ALLOWED` must flip |
 | G2 | Archive live BF config | **PARTIAL** | WP2B-B `diff all` / `dump all` archived under `evidence/wp2b-b/`; keep before any erase |
-| G3 | Recovery path ready | **SOFTWARE_MATCH / UNTESTED** | OEM BOOT-button ROM DFU documented; AP `ENABLE_DFU_BOOT` in BL only; **not exercised** |
-| G4 | Halo BF recovery image on hand | **PARTIAL** | Local WP2B-A reproduced 4.5.1 Halo hex exists; factory/cloud Halo hex SHA preferred; installed image is **2026.6.2** not 4.5.1 |
-| G5 | Physical HSE = 8 MHz | **UNPROVED** | BF + AP compile HSE8 / 480 MHz; live `CLK=480MHz` is software report only; no crystal photo/scope |
+| G3 | Recovery path ready | **SOFTWARE_MATCH / UNTESTED** | WP2B-F: OEM BOOT DFU procedure + checkpoints documented; AP `ENABLE_DFU_BOOT` in BL only; **hardware DFU not exercised** |
+| G4 | Halo BF recovery image on hand | **PARTIAL** | WP2B-F: exact `e0b7bb01b` hex **missing**; alt local 4.5.1 Halo hex + near 2026.6.2 (`8753f38fc`) inventoried under `evidence/wp2b-f/`; prefer Configurator Online `HDZERO_HALO` + re-apply `diff all` |
+| G5 | Physical HSE = 8 MHz | **UNPROVED** | WP2B-F: SOURCE_CONFIRMED HSE8 defaults for BF 2026.6.2; live `CLK=480MHz` still software-only; no crystal photo/scope |
 | G6 | MCU identity for DFU notes | **PARTIAL** | Class STM32H743xx + UID live; package marking / ROM version / option bytes **UNPROVED** |
 | G7 | IMU SKU + CS | **PROVED_LIVE** | ICM42688P on GYRO_1 PB4/PC13; MPU not populated |
 | G8 | IMU absolute orientation | **SOFTWARE_APPLIED / HW_PARTIAL** | Hwdef ICM `ROTATION_ROLL_180`, MPU `YAW_270` (WP2B-D); Acc six-face proved ICM only; gyro polarity + MPU SKU + first AP AHRS still open |
@@ -48,18 +48,18 @@ Evidence classes:
 
 - HSE 8 MHz compile path (BF Makefile + AP `OSCILLATOR_HZ 8000000`)  
 - SYSCLK 480 MHz reported by BF `status`  
-- BF CW0 MSP body ↔ AP FRD via `ROTATION_ROLL_180` (indicated; hwdef not yet updated)  
-- Prior relative ICM/`NONE` vs MPU/`ROLL_180_YAW_90` raw-register normalisation (WP2A) — not AP FRD  
+- BF CW0 MSP body ↔ AP FRD via `ROTATION_ROLL_180` (**applied in hwdef by WP2B-D**)  
+- Prior relative ICM/`NONE` vs MPU/`ROLL_180_YAW_90` raw-register normalisation (WP2A) — historical  
 - PE3 active-HIGH PINIO semantics in OEM/BF docs (not mapped on this dump)  
 - Flash layout difference BF vs AP (known; dual-boot impossible)  
-- OEM DFU procedure text  
+- OEM DFU procedure text (WP2B-F checkpoints)  
 
 ### Still requires hardware / human action
 
 - Crystal measurement or marking photo  
-- Package / option bytes / ROM DFU round-trip  
-- Human decision to apply ICM `ROTATION_ROLL_180` (and MPU composition) in hwdef  
-- Optional silk photo + signed gyro rotations before trusting first AP attitude  
+- Package / option bytes / ROM DFU round-trip (recommended before first AP flash)  
+- Exact or accepted BF recovery image for installed 2026.6.2 (`e0b7bb01b` still missing)  
+- Gyro polarity proof (WP2B-E incomplete) + first AP AHRS after any future flash  
 - External baro fit for any flight or baro-using modes  
 - PE3/9V meter across power states  
 - Battery ADC with LiPo + DMM  
@@ -72,9 +72,9 @@ Not an authorization — a checklist:
 
 1. **G1** human approval recorded.  
 2. **G2** BF dump archived (done for this unit in WP2B-B; re-diff if config changed).  
-3. **G3–G4** operator can perform ROM DFU restore to a known Halo BF image.  
+3. **G3–G4** operator can perform ROM DFU restore to a known Halo BF image (prefer Online `HDZERO_HALO` + `diff all`).  
 4. **G5** accept provisional HSE8 **or** obtain crystal evidence (risk acknowledgment if still unknown).  
-5. **G7** already proved for this SKU; **G8** plan `ROTATION_ROLL_180` for ICM (docs indicate; hwdef still `NONE`) before trusting AP attitude.  
+5. **G7** proved for this SKU; **G8** ICM `ROLL_180` in hwdef (WP2B-D); gyro polarity still open.  
 6. **G9** external baro available **or** accept USB config-error-only bring-up.  
 7. **G16** props off; no VTX 9V experiments on first boot.  
 

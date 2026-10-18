@@ -42,7 +42,9 @@ ArduPilot body is **X forward, Y right, Z down**. Mapping BF→AP:
 ROTATION_ROLL_180: (x, y, z) → (x, -y, -z)
 ```
 
-## Comparison to current hwdef `ROTATION_NONE`
+## Comparison to hwdef at WP2B-C time (`ROTATION_NONE`)
+
+> **Update:** WP2B-D applied ICM `ROTATION_ROLL_180` (and MPU `YAW_270`). The comparison below describes the pre-WP2B-D tree.
 
 | Claim | Level |
 | ----- | ----- |
@@ -66,7 +68,7 @@ Static faces do not prove gyro signs. Acc six-face is sufficient to indicate ROL
 IMU_ORIENTATION_TEST = COMPLETE_SIX_FACE_ACC
 MSP_FRAME = BF_X_FWD_Y_LEFT_Z_UP (MATCH)
 AP_FRD_MAP = ROTATION_ROLL_180 (INDICATED)
-AP_ICM_HWDEF = STILL_ROTATION_NONE (UNCHANGED; INCORRECT_FOR_FRD)
+AP_ICM_HWDEF = WP2B-C_SNAPSHOT_ROTATION_NONE; SUPERSEDED_BY_WP2B-D_ROLL_180
 PRIOR_Y_AMBIGUOUS_CLAIM = RETRACTED
 MPU6000_SKU = NOT_ON_THIS_UNIT
 HARDWARE_FLASH_ALLOWED = NO

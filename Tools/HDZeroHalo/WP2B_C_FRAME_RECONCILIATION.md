@@ -53,7 +53,7 @@ After scale, samples go through `_rotate_and_correct_accel/gyro` with the
 hwdef `Rotation`. Halo currently:
 
 ```text
-IMU Invensensev3 … ROTATION_NONE
+IMU Invensensev3 … ROTATION_NONE   # WP2B-C-time snapshot; WP2B-D uses ROLL_180
 ```
 
 `ROTATION_NONE` leaves the raw-register / BF-body (CW0) frame unchanged.
@@ -125,7 +125,7 @@ ICM_REGISTER_XYZ = NO_DRIVER_REMAP (Invensensev3)
 FRAME_MAP_BF_TO_AP = ROTATION_ROLL_180
 PRIOR_WP2B_C_Y_AMBIGUOUS = CORRECTED (was wrong Y-right assumption)
 ROTATION_NONE = NOT_CORRECT_FOR_AP_FRD
-ROTATION_ROLL_180 = INDICATED_NOT_APPLIED (no firmware change this WP)
+ROTATION_ROLL_180 = INDICATED_AT_WP2B-C; APPLIED_IN_WP2B-D (see WP2B_D_IMU_ROTATION_FIX.md)
 GYRO_SIGN_PROOF = STILL_OPTIONAL_OPEN
 HARDWARE_FLASH_ALLOWED = NO
 ```

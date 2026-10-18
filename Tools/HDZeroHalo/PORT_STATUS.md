@@ -4,6 +4,14 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## WP2B-F update (2026-10-18)
+
+HSE8 software chain reconfirmed for BF 2026.6.2 (`e0b7bb01b`); physical crystal
+still unproved. Exact installed BF hex not archived; config backup + alt 4.5.1
+Halo hex inventoried under `evidence/wp2b-f/`. DFU procedure documented, **not**
+hardware-tested. First AP USB bench = NOT_READY. See `WP2B_F_*.md`.
+**HARDWARE_FLASH_ALLOWED = NO**.
+
 ## WP2B-D update (2026-10-18)
 
 Hwdef ICM `ROTATION_ROLL_180`, MPU `ROTATION_YAW_270` (MPU SKU untested).
