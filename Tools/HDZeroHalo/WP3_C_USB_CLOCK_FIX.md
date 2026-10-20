@@ -1,10 +1,10 @@
 # WP3-C — HDZero Halo USB clock fix (offline)
 
-**Date:** 2026-10-19  
-**HARDWARE_FLASH_ALLOWED = NO**  
+**Date:** 2026-10-19
+**HARDWARE_FLASH_ALLOWED = NO**
 **Base HEAD:** `c1a1fc2d9e4ac6b877081c4586ef0a31eff7d97b`
 
-Evidence (outside Git):  
+Evidence (outside Git):
 `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-c-usb-clock-fix/`
 
 ## Research summary

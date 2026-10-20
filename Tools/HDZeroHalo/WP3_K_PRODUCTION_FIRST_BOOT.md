@@ -3,9 +3,9 @@
 Date: 2026-10-21. AI-assisted execution of the corrected single-session ROM-DFU
 plan. **One hardware flash trial.** No rebuild, commit, push or merge.
 
-Full report (in-repo copy): `evidence/wp3-k/WP3_K_REPORT.md`  
+Full report (in-repo copy): `evidence/wp3-k/WP3_K_REPORT.md`
 External original (unmodified):
-`/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/WP3_K_REPORT.md`  
+`/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/WP3_K_REPORT.md`
 Hash index: `evidence/EXTERNAL_EVIDENCE.md`
 
 ```text

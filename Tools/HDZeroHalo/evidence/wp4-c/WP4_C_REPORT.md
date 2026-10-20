@@ -1,9 +1,9 @@
 # WP4-C — HDZero Halo full USB/MAVLink inventory
 
-**MODE:** READ-ONLY  
-**HARDWARE_FLASH_ALLOWED:** NO  
-**Date:** 2026-10-21  
-**Port:** Windows COM14 — USB `1209:5741` (ArduPilot / HDZeroHalo)  
+**MODE:** READ-ONLY
+**HARDWARE_FLASH_ALLOWED:** NO
+**Date:** 2026-10-21
+**Port:** Windows COM14 — USB `1209:5741` (ArduPilot / HDZeroHalo)
 **Result:** COMPLETE — stop for overleg
 
 ---
@@ -127,8 +127,8 @@ Artifacts (WP3-K flash source):
 | `build/wp3-j-app/HDZeroHalo/bin/arducopter.bin` | same |
 | `evidence/wp3-j-…/after/arducopter.elf` | `5d9af4f77d2fc621b31efeef5d4cffccff1895adff5dbfdca007fe7573acef62` |
 
-ELF/strings match live STATUSTEXT: `ArduCopter V4.8.0-dev (c1a1fc2d)`, `HDZeroHalo`, ChibiOS `9aebaf4a`.  
-Generated `hwdef.h`: `HAL_USB_VENDOR_ID 0x1209`, `HAL_USB_PRODUCT_ID 0x5741`, `CHIBIOS_BOARD_NAME "HDZeroHalo"`.  
+ELF/strings match live STATUSTEXT: `ArduCopter V4.8.0-dev (c1a1fc2d)`, `HDZeroHalo`, ChibiOS `9aebaf4a`.
+Generated `hwdef.h`: `HAL_USB_VENDOR_ID 0x1209`, `HAL_USB_PRODUCT_ID 0x5741`, `CHIBIOS_BOARD_NAME "HDZeroHalo"`.
 `board_types.txt`: `AP_HW_HDZERO_HALO = 1414` — matches AUTOPILOT_VERSION.
 
 | Check | Live | Source expectation | Verdict |
@@ -186,8 +186,8 @@ Windows staging mirror: `C:\Users\sande\HDZeroHalo_WP4C\raw\`
 
 ## 6. Verdict
 
-Live Halo on COM14 matches the WP3-J/K HDZeroHalo image (`c1a1fc2d`, board 1414): ICM path healthy, DShot300 on motors 1–4, PWM5 present unused, UART/USB/batt **configuration** aligned with hwdef.  
-`FRAME_CLASS=1` / `FRAME_TYPE=1` match the requested check (and differ from hwdef’s default FRAME_TYPE 12).  
+Live Halo on COM14 matches the WP3-J/K HDZeroHalo image (`c1a1fc2d`, board 1414): ICM path healthy, DShot300 on motors 1–4, PWM5 present unused, UART/USB/batt **configuration** aligned with hwdef.
+`FRAME_CLASS=1` / `FRAME_TYPE=1` match the requested check (and differ from hwdef’s default FRAME_TYPE 12).
 Open PreArms are exactly those expected with no RC, mag, or pack. No MAVLink error counters.
 
 **HARDWARE_FLASH_ALLOWED remains NO. Stop for overleg.**

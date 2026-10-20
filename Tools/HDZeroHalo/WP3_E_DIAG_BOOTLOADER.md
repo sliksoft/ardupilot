@@ -8,12 +8,12 @@
 > Marker 4 means the firmware reached the configuration callback; it does not
 > prove completion on Windows or working CDC traffic.
 
-**Date:** 2026-10-20  
-**HARDWARE_FLASH_ALLOWED = NO**  
-**Base HEAD:** `c1a1fc2d9e4ac6b877081c4586ef0a31eff7d97b`  
+**Date:** 2026-10-20
+**HARDWARE_FLASH_ALLOWED = NO**
+**Base HEAD:** `c1a1fc2d9e4ac6b877081c4586ef0a31eff7d97b`
 **SAFE_FOR_CODEX_REVIEW = YES**
 
-Evidence (outside Git):  
+Evidence (outside Git):
 `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-e-diag-bootloader/`
 
 This image is isolated from WP3-A and WP3-C. Production
@@ -39,8 +39,8 @@ HARDWARE_FLASH_ALLOWED      = NO
 
 ## Why this variant exists
 
-WP3-A: flashed AP bootloader + ArduCopter; USB enumeration failed; ROM DFU works.  
-WP3-C: HSI48 USBSEL on the production HSE8 tree; not flashed.  
+WP3-A: flashed AP bootloader + ArduCopter; USB enumeration failed; ROM DFU works.
+WP3-C: HSI48 USBSEL on the production HSE8 tree; not flashed.
 WP3-D: option bytes normal; HSI64 route already present in pinned ChibiOS.
 
 If the production image hangs in `stm32_clock_init()` on `HSERDY`, USB never
@@ -49,7 +49,7 @@ bootloader, so a later hardware test can tell clock-init from USB-enum.
 
 ## OSCILLATOR_HZ 0
 
-`chibios_hwdef.py` writes `#define STM32_HSECLK <OSCILLATOR_HZ>U`.  
+`chibios_hwdef.py` writes `#define STM32_HSECLK <OSCILLATOR_HZ>U`.
 `stm32h7_mcuconf.h` already has a no-crystal branch for `STM32_HSECLK == 0U`:
 
 | Define | Value |

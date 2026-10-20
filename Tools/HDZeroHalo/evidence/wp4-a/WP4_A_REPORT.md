@@ -23,7 +23,7 @@ HARDWARE_FLASH_ALLOWED         = NO
 Evidence:
 `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp4-a-usb-imu-attitude/`
 
-Primary motion dataset (USB-referenced redo): `samples/redo/`  
+Primary motion dataset (USB-referenced redo): `samples/redo/`
 (`REDO_SUMMARY.csv`, `redo_*_result.txt`, `capture_redo_*.jsonl`)
 
 ## Method notes
@@ -113,8 +113,8 @@ Yaw: relative only; **no absolute heading claim**.
 
 ## PREARM_STATUS = FAIL_FRAME_CLASS_ZERO (expected on bench)
 
-Live params: `FRAME_CLASS=0`, `FRAME_TYPE=12`.  
-Prior STATUSTEXT: `PreArm: Motors: Check frame class and type`.  
+Live params: `FRAME_CLASS=0`, `FRAME_TYPE=12`.
+Prior STATUSTEXT: `PreArm: Motors: Check frame class and type`.
 `PREARM` bit present but not enabled for arming path in sampled status.
 **No arming attempted.**
 

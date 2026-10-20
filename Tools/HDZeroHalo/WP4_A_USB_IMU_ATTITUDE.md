@@ -3,9 +3,9 @@
 Date: 2026-10-21. Read-only hardware test after WP3-K. No flash, ARM, motors,
 calibration, or parameter writes.
 
-Full report (in-repo copy): `evidence/wp4-a/WP4_A_REPORT.md`  
+Full report (in-repo copy): `evidence/wp4-a/WP4_A_REPORT.md`
 External original (unmodified):
-`/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp4-a-usb-imu-attitude/WP4_A_REPORT.md`  
+`/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp4-a-usb-imu-attitude/WP4_A_REPORT.md`
 Hash index: `evidence/EXTERNAL_EVIDENCE.md`
 
 ```text
