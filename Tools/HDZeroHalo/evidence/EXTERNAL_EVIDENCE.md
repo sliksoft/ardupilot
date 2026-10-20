@@ -78,6 +78,10 @@ not yet committed at flash time.
 - `.claude/`, `.serena/` caches / local session files, and `CLAUDE.md` (no
   allowed ArduPilot commit subsystem; keep local)
 
+## Copy normalization
+
+In-repo markdown report copies are byte-identical to the external originals except where trailing whitespace was stripped so `git diff --check` stays clean. Substance and SHA256 of firmware/bootloader images are unchanged.
+
 ## Integrity checks performed at baseline commit
 
 - Curated WP3-K / WP4-A / WP4-C reports byte-identical to external originals
