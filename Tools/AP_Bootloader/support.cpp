@@ -6,6 +6,7 @@
 #include "ch.h"
 #include "hal.h"
 #include "hwdef.h"
+#include <AP_HAL_ChibiOS/hwdef/common/board.h>
 #include <AP_HAL_ChibiOS/hwdef/common/usbcfg.h>
 #include <AP_HAL_ChibiOS/hwdef/common/flash.h>
 #include <AP_HAL_ChibiOS/hwdef/common/stm32_util.h>
@@ -287,6 +288,7 @@ uint32_t get_mcu_desc(uint32_t max, uint8_t *revstr)
 
 void led_on(unsigned led)
 {
+#if !HAL_BOOTLOADER_DIAG_LED
 #ifdef HAL_GPIO_PIN_LED_BOOTLOADER
     if (led == LED_BOOTLOADER) {
         palWriteLine(HAL_GPIO_PIN_LED_BOOTLOADER, HAL_LED_ON);
@@ -297,10 +299,14 @@ void led_on(unsigned led)
         palWriteLine(HAL_GPIO_PIN_LED_ACTIVITY, HAL_LED_ON);
     }
 #endif
+#else
+    (void)led;
+#endif
 }
 
 void led_off(unsigned led)
 {
+#if !HAL_BOOTLOADER_DIAG_LED
 #ifdef HAL_GPIO_PIN_LED_BOOTLOADER
     if (led == LED_BOOTLOADER) {
         palWriteLine(HAL_GPIO_PIN_LED_BOOTLOADER, !HAL_LED_ON);
@@ -311,10 +317,14 @@ void led_off(unsigned led)
         palWriteLine(HAL_GPIO_PIN_LED_ACTIVITY, !HAL_LED_ON);
     }
 #endif
+#else
+    (void)led;
+#endif
 }
 
 void led_toggle(unsigned led)
 {
+#if !HAL_BOOTLOADER_DIAG_LED
 #ifdef HAL_GPIO_PIN_LED_BOOTLOADER
     if (led == LED_BOOTLOADER) {
         palToggleLine(HAL_GPIO_PIN_LED_BOOTLOADER);
@@ -324,6 +334,9 @@ void led_toggle(unsigned led)
     if (led == LED_ACTIVITY) {
         palToggleLine(HAL_GPIO_PIN_LED_ACTIVITY);
     }
+#endif
+#else
+    (void)led;
 #endif
 }
 
@@ -426,10 +439,19 @@ int strcmp(const char *s1, const char *s2)
 }
 
 //simple variant of std c function to reduce used flash space
+// GCC -Os / -ftree-loop-distribute-patterns rewrites the obvious
+// increment loop into a call to strlen. In this translation unit that
+// becomes a 4-byte Thumb tail branch to itself, so USB string setup
+// never returns. Disable that rewrite for this definition only.
+#if defined(__GNUC__)
+__attribute__((optimize("no-tree-loop-distribute-patterns")))
+#endif
 size_t strlen(const char *s1)
 {
     size_t ret = 0;
-    while (*s1++) ret++;
+    while (s1[ret] != 0) {
+        ret++;
+    }
     return ret;
 }
 
@@ -455,6 +477,11 @@ void lock_bl_port(void)
 void init_uarts(void)
 {
 #if HAL_USE_SERIAL_USB == TRUE
+#if HAL_BOOTLOADER_DIAG_LED
+    while ((RCC->CR & RCC_CR_HSI48RDY) == 0) {
+    }
+    halo_diag_led_marker(3);
+#endif
     sduObjectInit(&SDU1);
     sduStart(&SDU1, &serusbcfg1);
 #if HAL_HAVE_DUAL_USB_CDC

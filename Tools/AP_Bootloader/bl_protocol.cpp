@@ -45,6 +45,7 @@
 #include "ch.h"
 #include "hal.h"
 #include "hwdef.h"
+#include "AP_Bootloader_config.h"
 
 #include "bl_protocol.h"
 #include "support.h"
@@ -136,7 +137,9 @@
 // interrupt vector table for STM32
 #define SCB_VTOR 0xE000ED08
 
+#if !HAL_BOOTLOADER_READ_ONLY
 static virtual_timer_t systick_vt;
+#endif
 
 /*
   millisecond timer array
@@ -165,6 +168,7 @@ extern AP_FlashIface_JEDEC ext_flash;
 /*
   1ms timer tick callback
  */
+#if !HAL_BOOTLOADER_READ_ONLY
 static void sys_tick_handler(virtual_timer_t* vt, void *ctx)
 {
     chSysLockFromISR();
@@ -191,6 +195,7 @@ static void delay(unsigned msec)
 {
     chThdSleep(chTimeMS2I(msec));
 }
+#endif
 
 void
 led_set(enum led_state state)
@@ -249,6 +254,9 @@ do_jump(uint32_t stacktop, uint32_t entrypoint)
 void
 jump_to_app()
 {
+#if HAL_BOOTLOADER_NO_APP_JUMP
+    return;
+#endif
     const uint32_t *app_base = (const uint32_t *)(APP_START_ADDRESS);
 
 #if AP_CHECK_FIRMWARE_ENABLED
@@ -375,6 +383,7 @@ invalid_response(void)
     cout(data, sizeof(data));
 }
 
+#if !HAL_BOOTLOADER_READ_ONLY
 static void
 failure_response(void)
 {
@@ -385,6 +394,7 @@ failure_response(void)
 
     cout(data, sizeof(data));
 }
+#endif
 
 /**
  * Function to wait for EOC
@@ -460,6 +470,66 @@ static void test_flash()
 void
 bootloader(unsigned timeout)
 {
+#if HAL_BOOTLOADER_READ_ONLY
+    (void)timeout;
+    while (true) {
+        const int c = cin(1000);
+        if (c < 0) {
+            continue;
+        }
+        switch (c) {
+        case PROTO_GET_SYNC:
+            if (!wait_for_eoc(2)) {
+                invalid_response();
+                continue;
+            }
+            break;
+
+        case PROTO_GET_DEVICE: {
+            const int arg = cin(1000);
+            if (arg < 0 || !wait_for_eoc(2)) {
+                invalid_response();
+                continue;
+            }
+            switch (arg) {
+            case PROTO_DEVICE_BL_REV:
+                cout_word(BL_PROTOCOL_VERSION);
+                break;
+            case PROTO_DEVICE_BOARD_ID:
+                cout_word(board_info.board_type);
+                break;
+            case PROTO_DEVICE_BOARD_REV:
+                cout_word(board_info.board_rev);
+                break;
+            case PROTO_DEVICE_FW_SIZE:
+                cout_word(board_info.fw_size);
+                break;
+            case PROTO_DEVICE_EXTF_SIZE:
+                cout_word(board_info.extf_size);
+                break;
+            default:
+                invalid_response();
+                continue;
+            }
+            break;
+        }
+
+        case PROTO_GET_CHIP:
+            if (!wait_for_eoc(2)) {
+                invalid_response();
+                continue;
+            }
+            cout_word(get_mcu_id());
+            break;
+
+        default:
+            invalid_response();
+            continue;
+        }
+        lock_bl_port();
+        sync_response();
+    }
+#else
 #if TEST_FLASH
     test_flash();
 #endif
@@ -1262,4 +1332,5 @@ cmd_fail:
         failure_response();
         continue;
     }
+#endif // HAL_BOOTLOADER_READ_ONLY
 }
