@@ -1,0 +1,56 @@
+# HDZero Halo diagnostic USB bootloader (WP3-E)
+#
+# Isolated from HDZeroHalo production hwdef. HSI64 SYSCLK, HSE off, USB
+# HSI48, no application jump. Diagnostic only — DO NOT FLASH until review.
+#
+# ************************************************************************
+# HARDWARE_FLASH_ALLOWED = NO
+# ************************************************************************
+
+MCU STM32H7xx STM32H743xx
+
+APJ_BOARD_ID AP_HW_HDZERO_HALO
+
+# Existing ChibiOS H7 path: STM32_HSECLK 0U → HSI64 PLL source, HSE disabled.
+OSCILLATOR_HZ 0
+
+FLASH_SIZE_KB 2048
+
+# bootloader at start of flash (same reserved 128 KB as production Halo)
+FLASH_RESERVE_START_KB 0
+FLASH_BOOTLOADER_LOAD_KB 128
+
+# USB bootloading only. No UART/CAN/SD jump paths compiled in.
+SERIAL_ORDER OTG1
+
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+define STM32_USBSEL STM32_USBSEL_HSI48_CK
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+# Hold CS high in bootloader
+PB4 GYRO1_CS CS
+PB3 GYRO2_CS CS
+PB12 FLASH_CS CS
+
+# Status LED PE2, active-low. Used for diagnostic progress markers.
+PE2 LED_BOOTLOADER OUTPUT LOW
+define HAL_LED_ON 0
+
+# Active-HIGH buzzer: remain inactive after GPIO initialisation.
+PD12 BUZZER OUTPUT LOW
+
+# VTX 9V rail: remain LOW. No RELAY / auto-on.
+PE3 VTX_PWR OUTPUT LOW
+
+# Stay in this image. No timeout, RTC fastboot, host PROTO_BOOT, or other jump.
+define AP_FASTBOOT_ENABLED 0
+define HAL_BOOTLOADER_TIMEOUT 0
+define HAL_BOOTLOADER_NO_APP_JUMP 1
+define HAL_BOOTLOADER_DIAG_LED 1
+define HAL_BOOTLOADER_READ_ONLY 1
+define AP_FLASH_ECC_CHECK_ENABLED 0
+
+# Pinned ChibiOS startup has no software DFU entry hook; use physical BOOT.

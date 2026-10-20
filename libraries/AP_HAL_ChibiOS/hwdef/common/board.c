@@ -225,6 +225,129 @@ static void stm32_gpio_init(void) {
 
 #endif //!STM32F100_MCUCONF
 
+#if HAL_BOOTLOADER_DIAG_LED
+/*
+  PE2 status LED markers for the isolated diagnostic bootloader.
+  Safe only after stm32_gpio_init() has enabled the GPIO clocks and
+  programmed VAL_GPIOE_*. Active-low (HAL_LED_ON 0).
+ */
+#ifndef HAL_LED_ON
+#define HAL_LED_ON 0
+#endif
+
+static void halo_diag_led_raw(int on)
+{
+#if STM32_HAS_GPIOE
+    const uint32_t pin = 2U;
+    if ((on && !HAL_LED_ON) || (!on && HAL_LED_ON)) {
+        GPIOE->BSRR.W = (1U << (pin + 16U));
+    } else {
+        GPIOE->BSRR.W = (1U << pin);
+    }
+#else
+    (void)on;
+#endif
+}
+
+static void halo_diag_delay(void)
+{
+    /* Roughly tens of ms at HSI 64 MHz; shorter after 400 MHz PLL. */
+    volatile uint32_t n = 400000U;
+    while (n--) {
+        __NOP();
+    }
+}
+
+void halo_diag_led_marker(unsigned stage)
+{
+    if (stage == 4U) {
+        halo_diag_led_raw(1);
+        return;
+    }
+    halo_diag_led_raw(0);
+    halo_diag_delay();
+    for (unsigned i = 0; i < stage; i++) {
+        halo_diag_led_raw(1);
+        halo_diag_delay();
+        halo_diag_led_raw(0);
+        halo_diag_delay();
+    }
+    halo_diag_delay();
+    halo_diag_delay();
+}
+
+#if defined(STM32H7)
+/* Written before CRT0 DATA/BSS setup; common.ld excludes .ram0.* from both. */
+static volatile uint32_t halo_diag_reset_flags __attribute__((section(".ram0.halo_reset_flags")));
+
+static void halo_diag_capture_reset_flags(void)
+{
+    halo_diag_reset_flags = RCC->RSR;
+    /* RM0433: assert RMVF to clear flags, then release it for the next reset. */
+    RCC->RSR = RCC_RSR_RMVF;
+    RCC->RSR = 0U;
+}
+
+uint32_t halo_diag_get_reset_flags(void)
+{
+    return halo_diag_reset_flags;
+}
+
+/*
+  STM32H743 RCC_RSR (offset 0xD0). Priority is most specific first.
+  Long pulses run at the reset HSI 64 MHz clock, before stm32_clock_init().
+  1: POR/PIN  2: BOR without POR  3: IWDG  4: WWDG  5: SFTRST  6: LPWR/unknown
+ */
+static unsigned halo_diag_reset_pulses(uint32_t rsr)
+{
+    if ((rsr & RCC_RSR_IWDG1RSTF) != 0U) {
+        return 3U;
+    }
+    if ((rsr & RCC_RSR_WWDG1RSTF) != 0U) {
+        return 4U;
+    }
+    if ((rsr & RCC_RSR_SFTRSTF) != 0U) {
+        return 5U;
+    }
+    if ((rsr & RCC_RSR_LPWRRSTF) != 0U) {
+        return 6U;
+    }
+    if (((rsr & RCC_RSR_BORRSTF) != 0U) && ((rsr & RCC_RSR_PORRSTF) == 0U)) {
+        return 2U;
+    }
+    if ((rsr & (RCC_RSR_PORRSTF | RCC_RSR_PINRSTF)) != 0U) {
+        return 1U;
+    }
+    return 6U;
+}
+
+static void halo_diag_delay_long(void)
+{
+    halo_diag_delay();
+    halo_diag_delay();
+    halo_diag_delay();
+}
+
+static void halo_diag_led_long_pulses(unsigned count)
+{
+    halo_diag_led_raw(0);
+    halo_diag_delay_long();
+    for (unsigned i = 0; i < count; i++) {
+        halo_diag_led_raw(1);
+        halo_diag_delay_long();
+        halo_diag_led_raw(0);
+        halo_diag_delay_long();
+    }
+    halo_diag_delay_long();
+}
+
+static void halo_diag_show_reset_cause(void)
+{
+    halo_diag_led_long_pulses(halo_diag_reset_pulses(halo_diag_get_reset_flags()));
+}
+#endif // STM32H7
+#endif // HAL_BOOTLOADER_DIAG_LED
+
 /**
  * @brief   Early initialization code.
  * @details This initialization must be performed just after stack setup
@@ -234,12 +357,26 @@ static void stm32_gpio_init(void) {
  * You can rely on: 1) const variables or tables 2) flash code 3) automatic variables
  */
 void __early_init(void) {
+#if HAL_BOOTLOADER_DIAG_LED && defined(STM32H7)
+  halo_diag_capture_reset_flags();
+#endif
 #if !defined(STM32F1)
   stm32_gpio_init();
+#endif
+#if HAL_BOOTLOADER_DIAG_LED
+#if defined(STM32H7)
+  /* Long pulses at HSI 64 MHz: reset cause, before progress marker 1. */
+  halo_diag_show_reset_cause();
+#endif
+  /* GPIO clocks and PE2 are programmed; HSI is the reset clock. */
+  halo_diag_led_marker(1);
 #endif
 #if !HAL_XIP_ENABLED || defined(HAL_FORCE_CLOCK_INIT)
   // if running from external flash then the clocks must not be reset - instead rely on the bootloader to setup
   stm32_clock_init();
+#endif
+#if HAL_BOOTLOADER_DIAG_LED
+  halo_diag_led_marker(2);
 #endif
 #if defined(HAL_DISABLE_DCACHE)
   SCB_DisableDCache();

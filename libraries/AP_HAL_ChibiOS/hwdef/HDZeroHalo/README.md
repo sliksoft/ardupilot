@@ -1,16 +1,21 @@
-# HDZero Halo — ArduPilot hwdef (WP1B)
+# HDZero Halo — ArduPilot hwdef
 
-**HARDWARE_FLASH_ALLOWED = NO**  
-**OSCILLATOR_STATUS = UNKNOWN** (provisional `OSCILLATOR_HZ 8000000` for compile only)
+**HARDWARE_FLASH_ALLOWED = NO** (no further flash without new authorization)
+
+**OSCILLATOR_STATUS = HSI64 software path** (`OSCILLATOR_HZ 0` → 400 MHz SYSCLK;
+physical HSE unused). USB via HSI48 (`STM32_USBSEL_HSI48_CK`).
 
 Standard ArduCopter ChibiOS board port. Pin map from Betaflight
 `configs/HDZO/HDZERO_HALO/config.h`. Motor TIM3 PC6–PC9 follows `AnyleafH7`.
 
-## Do not flash
+## Hardware USB baseline (2026-10-21)
 
-Until HSE frequency, flash layout vs factory BF, IMU rotation, VBAT scale, and
-PE3 9V polarity are verified on hardware, treat all binaries as
-**NOT VERIFIED — DO NOT FLASH**. Recovery remains STM32 DFU → Betaflight.
+Production BL + ArduCopter were flashed and qualified on USB bench
+(WP3-K / WP4-A/B/C). See `Tools/HDZeroHalo/HARDWARE_BASELINE.md`.
+Images: BL `4f92d710…`, app `ec4e56ca…` (`c1a1fc2d`, board 1414).
+
+Still unproven: motor spin, RC, mag, baro, pack, PE3 9V rail, physical HSE,
+ARM/flight. Recovery remains STM32 ROM DFU (+ archived BF / DiagBL images).
 
 ROM DFU recovery uses the physical BOOT button at USB power-on. Software
 ROM-DFU entry is disabled in both application and bootloader: the pinned
@@ -40,7 +45,8 @@ Tools/scripts/build_bootloaders.py HDZeroHalo
 | Buzzer | Active HIGH with `BEEPER_INVERTED` | GPIO idle LOW, active HIGH in application; idle LOW in bootloader |
 | LED strip | TIM1 CH3 | Addressable LEDs unsupported: PWM5 **NODMA** |
 | PE3 9V | CLI PINIO | LOW after GPIO initialisation; reset/ROM DFU unverified; no RELAY default |
-| HSE | Makefile defaults to 8 MHz | HSE8 retained for builds; physical source unverified |
+| SYSCLK | HSE8 → up to 480 MHz | HSI64 → 400 MHz PLL1 (WP3-J); HSE unused |
+| USB 48 MHz | HSI48 + CRS | HSI48 via `STM32_USBSEL_HSI48_CK` (app+BL); CRS not in this ChibiOS HAL |
 
 See `Tools/HDZeroHalo/WP1B_*.md` for build evidence and review.
 

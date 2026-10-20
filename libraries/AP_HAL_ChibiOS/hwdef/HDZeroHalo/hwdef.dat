@@ -8,8 +8,9 @@
 # SPI flash / FPV UART roles match FoxeerH743v1 / TMotorH743 patterns.
 #
 # ************************************************************************
-# OSCILLATOR_HZ below is PROVISIONAL for offline compilation only.
-# Physical HSE frequency is unverified. NOT VERIFIED — DO NOT FLASH.
+# WP3-J: HSI64 SYSCLK (OSCILLATOR_HZ 0) → supported 400 MHz PLL1 path.
+# No unproven 480 MHz configuration. USB via HSI48. Matches bootloader.
+# HARDWARE_FLASH_ALLOWED = NO until independent review + USB bench test.
 # ************************************************************************
 
 # MCU class and specific type
@@ -19,10 +20,10 @@ MCU STM32H7xx STM32H743xx
 # Not an official HDZero manufacturer reservation.
 APJ_BOARD_ID AP_HW_HDZERO_HALO
 
-# Normal Betaflight 4.5.1 builds default HSE_VALUE to 8 MHz in the Makefile.
-# Physical clock source on this Halo remains unverified — DO NOT FLASH.
-OSCILLATOR_HZ 8000000
-MCU_CLOCKRATE_MHZ 480
+# HSI64 PLL source, HSE disabled. ChibiOS default HSI path is 400 MHz SYSCLK
+# (VOS Scale1, STM32_ENFORCE_H7_REV_XY). Do not set MCU_CLOCKRATE_MHZ 480 —
+# that path is HSE-only and unproven on this board.
+OSCILLATOR_HZ 0
 
 FLASH_SIZE_KB 2048
 
@@ -41,6 +42,10 @@ define CH_CFG_ST_RESOLUTION 16
 # USB (standard H743 OTG pins; not listed in BF config.h — peer convention)
 PA11 OTG_FS_DM OTG1
 PA12 OTG_FS_DP OTG1
+# Match working Betaflight H7 USB clock: HSI48 (not HSE→PLL3Q). ChibiOS enables
+# HSI48 and accepts STM32_USBSEL_HSI48_CK; CRS calibration is not implemented in
+# this HAL tree (H723/type2 boards already use HSI48 without CRS).
+define STM32_USBSEL STM32_USBSEL_HSI48_CK
 
 PA13 JTMS-SWDIO SWD
 PA14 JTCK-SWCLK SWD

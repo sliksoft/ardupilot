@@ -28,6 +28,7 @@
  */
 #include "hal.h"
 #include "hwdef.h"
+#include "board.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -321,6 +322,9 @@ static void usb_event(USBDriver *usbp, usbevent_t event) {
   case USB_EVENT_ADDRESS:
     return;
   case USB_EVENT_CONFIGURED:
+#if HAL_BOOTLOADER_DIAG_LED
+    halo_diag_led_marker(4);
+#endif
     chSysLockFromISR();
 
     /* Enables the endpoints specified into the configuration.

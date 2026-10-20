@@ -1,0 +1,50 @@
+# HDZero Halo diagnostic board — configure stub only.
+#
+# This directory exists so `./waf configure --board HDZeroHaloDiagBL`
+# succeeds. Build the bootloader only. Do not build or flash an
+# application from this board. No motors, ESCs, or ARM outputs.
+#
+# ************************************************************************
+# HARDWARE_FLASH_ALLOWED = NO
+# ************************************************************************
+
+MCU STM32H7xx STM32H743xx
+
+APJ_BOARD_ID AP_HW_HDZERO_HALO
+
+OSCILLATOR_HZ 0
+
+FLASH_SIZE_KB 2048
+FLASH_RESERVE_START_KB 128
+
+define HAL_STORAGE_SIZE 32768
+STORAGE_FLASH_PAGE 14
+
+STM32_ST_USE_TIMER 12
+define CH_CFG_ST_RESOLUTION 16
+
+SERIAL_ORDER OTG1
+
+PA11 OTG_FS_DM OTG1
+PA12 OTG_FS_DP OTG1
+define STM32_USBSEL STM32_USBSEL_HSI48_CK
+
+PA13 JTMS-SWDIO SWD
+PA14 JTCK-SWCLK SWD
+
+PB4 GYRO1_CS CS
+PB3 GYRO2_CS CS
+PB12 FLASH_CS CS
+
+PE2 LED0 OUTPUT LOW GPIO(90)
+define AP_NOTIFY_GPIO_LED_1_ENABLED 1
+define AP_NOTIFY_GPIO_LED_1_PIN 90
+
+PD12 BUZZER OUTPUT LOW
+PE3 VTX_PWR OUTPUT LOW
+
+define HAL_BOOTLOADER_NO_APP_JUMP 1
+define HAL_BOOTLOADER_DIAG_LED 1
+define AP_FASTBOOT_ENABLED 0
+# Configure stub only — do not embed a bootloader into an application image.
+define AP_BOOTLOADER_FLASHING_ENABLED 0

@@ -26,6 +26,10 @@
 #define HAL_BOARD_INIT_HOOK_CALL
 #endif
 
+#ifndef HAL_BOOTLOADER_DIAG_LED
+#define HAL_BOOTLOADER_DIAG_LED 0
+#endif
+
 // default to interrupts on port D
 #ifndef HAL_GPIO_INTERRUPT_PORT
 #define HAL_GPIO_INTERRUPT_PORT EXT_MODE_GPIOD
@@ -36,6 +40,12 @@
 extern "C" {
 #endif
   void boardInit(void);
+#if HAL_BOOTLOADER_DIAG_LED
+  void halo_diag_led_marker(unsigned stage);
+#if defined(STM32H7)
+  uint32_t halo_diag_get_reset_flags(void);
+#endif
+#endif
   HAL_BOARD_INIT_HOOK_DEFINE
 #ifdef __cplusplus
 }

@@ -5,6 +5,7 @@
 #include "hal.h"
 #include "watchdog.h"
 #include "stm32_util.h"
+#include "board.h"
 
 #ifndef IWDG_BASE
 #if defined(STM32H7)
@@ -180,7 +181,11 @@ void stm32_lockup_detect_start(void)
 void stm32_watchdog_save_reason(void)
 {
     if (reset_reason == 0) {
+#if HAL_BOOTLOADER_DIAG_LED && defined(STM32H7)
+        reset_reason = halo_diag_get_reset_flags();
+#else
         reset_reason = WDG_RESET_STATUS;
+#endif
     }
 }
 

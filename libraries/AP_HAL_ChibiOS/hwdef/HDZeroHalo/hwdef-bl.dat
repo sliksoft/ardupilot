@@ -1,8 +1,9 @@
 # HDZero Halo bootloader hwdef
 #
 # ************************************************************************
-# OSCILLATOR_HZ / FLASH_BOOTLOADER_LOAD_KB are PROVISIONAL.
-# NOT VERIFIED — DO NOT FLASH.
+# WP3-J: HSI64 SYSCLK (OSCILLATOR_HZ 0), USB HSI48. Matches proven DiagBL
+# clock path. Normal app jump retained. NOT VERIFIED on hardware —
+# HARDWARE_FLASH_ALLOWED = NO until independent review.
 # ************************************************************************
 
 # MCU class and specific type
@@ -10,8 +11,9 @@ MCU STM32H7xx STM32H743xx
 
 APJ_BOARD_ID AP_HW_HDZERO_HALO
 
-# NOT VERIFIED — DO NOT FLASH (must match main hwdef.dat)
-OSCILLATOR_HZ 8000000
+# HSI64 PLL source, HSE disabled (ChibiOS STM32_HSECLK 0U → 400 MHz SYSCLK).
+# Proven on Halo diagnostic bootloader (WP3-I). Must match main hwdef.dat.
+OSCILLATOR_HZ 0
 
 FLASH_SIZE_KB 2048
 
@@ -26,6 +28,8 @@ SERIAL_ORDER OTG1
 
 PA11 OTG_FS_DM OTG1
 PA12 OTG_FS_DP OTG1
+# USB FS clock = HSI48 (independent of HSE). Same as application.
+define STM32_USBSEL STM32_USBSEL_HSI48_CK
 
 PA13 JTMS-SWDIO SWD
 PA14 JTCK-SWCLK SWD
