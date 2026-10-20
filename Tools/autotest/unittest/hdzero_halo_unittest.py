@@ -262,11 +262,41 @@ int main() { return 0; }
             with self.subTest(r=r):
                 self.assertEqual(yaw270(a_mpu(r)), roll180(r))
 
+    def test_usb_clock_selects_hsi48(self):
+        """WP3-C: Halo USB FS must use HSI48, not HSE-derived PLL3Q."""
+        for configuration in self.outputs:
+            with self.subTest(configuration=configuration):
+                header = (self.outputs[configuration] / 'hwdef.h').read_text()
+                self.assertIn('#define STM32_USBSEL STM32_USBSEL_HSI48_CK', header)
+                self.assertNotIn('#define STM32_USBSEL STM32_USBSEL_PLL3_Q_CK', header)
+        for filename in ('hwdef.dat', 'hwdef-bl.dat'):
+            text = (BOARD / filename).read_text()
+            self.assertRegex(text, r'define\s+STM32_USBSEL\s+STM32_USBSEL_HSI48_CK')
+
+    def test_sysclk_uses_hsi64_not_hse(self):
+        """WP3-J: Halo SYSCLK must use HSI64 (OSCILLATOR_HZ 0), not HSE."""
+        for configuration in self.outputs:
+            with self.subTest(configuration=configuration):
+                header = (self.outputs[configuration] / 'hwdef.h').read_text()
+                self.assertIn('#define STM32_HSECLK 0U', header)
+                self.assertNotIn('#define STM32_HSECLK 8000000U', header)
+                self.assertNotIn('HAL_CUSTOM_MCU_CLOCKRATE 480000000', header)
+        for filename in ('hwdef.dat', 'hwdef-bl.dat'):
+            text = (BOARD / filename).read_text()
+            self.assertIsNotNone(re.search(r'^OSCILLATOR_HZ\s+0\s*$', text, re.M))
+            self.assertIsNone(re.search(r'^MCU_CLOCKRATE_MHZ\s+480\s*$', text, re.M))
+        # Production bootloader must keep normal app jump (not DiagBL flags).
+        bl = (BOARD / 'hwdef-bl.dat').read_text()
+        self.assertNotIn('HAL_BOOTLOADER_NO_APP_JUMP', bl)
+        self.assertNotIn('HAL_BOOTLOADER_READ_ONLY', bl)
+        self.assertNotIn('HAL_BOOTLOADER_DIAG_LED', bl)
+
     def test_peripheral_config_unchanged_by_imu_rotation(self):
         """Motors/DMA/UART/SPI/baro pins must not change with IMU rotation fix."""
         header = (self.outputs['app'] / 'hwdef.h').read_text()
         hwdef = (BOARD / 'hwdef.dat').read_text()
         self.assertIn('HAL_BARO_PROBE_EXT_DEFAULT', header)
+        self.assertRegex(hwdef, r'define\s+STM32_USBSEL\s+STM32_USBSEL_HSI48_CK')
         self.assertIn('STM32_TIM_TIM3_UP_DMA_STREAM', header)
         self.assertRegex(hwdef, r'PC6\s+TIM3_CH1\s+TIM3')
         self.assertRegex(hwdef, r'PC7\s+TIM3_CH2\s+TIM3')
