@@ -1,0 +1,12 @@
+EXPECTED_BL=4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f
+EXPECTED_APP=ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7
+EXPECTED_BL_BYTES=18916
+EXPECTED_APP_BYTES=1240584
+4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f  /home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/staging/HDZeroHalo_bl.bin
+ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7  /home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/staging/arducopter.bin
+BYTES 18916 /home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/staging/HDZeroHalo_bl.bin
+BYTES 1240584 /home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/staging/arducopter.bin
+4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f  /mnt/c/Users/sande/HDZeroHalo_WP3K_flash/staging/HDZeroHalo_bl.bin
+ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7  /mnt/c/Users/sande/HDZeroHalo_WP3K_flash/staging/arducopter.bin
+BYTES 18916 /mnt/c/Users/sande/HDZeroHalo_WP3K_flash/staging/HDZeroHalo_bl.bin
+BYTES 1240584 /mnt/c/Users/sande/HDZeroHalo_WP3K_flash/staging/arducopter.bin

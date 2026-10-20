@@ -1,0 +1,17 @@
+{
+  "wp3k_staging_bin": {
+    "path": "/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-k-production-first-boot/staging/arducopter.bin",
+    "sha256": "ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7",
+    "size": 1240584
+  },
+  "wp3j_elf": {
+    "path": "/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence/wp3-j-production-usb-boot/after/arducopter.elf",
+    "sha256": "5d9af4f77d2fc621b31efeef5d4cffccff1895adff5dbfdca007fe7573acef62",
+    "size": 2583916
+  },
+  "build_wp3j_bin": {
+    "path": "/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/ardupilot/build/wp3-j-app/HDZeroHalo/bin/arducopter.bin",
+    "sha256": "ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7",
+    "size": 1240584
+  }
+}

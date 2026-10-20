@@ -1,0 +1,20 @@
+# External evidence originals (outside git tree; left unmodified)
+# Root: /home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/evidence
+
+a9cc8061a8f036927b2c8685e6eb6c8729bccdc3b64256f462200edad31bccd6  wp3-k-production-first-boot/WP3_K_REPORT.md
+74e352475bf3a7db8f507e92b001c8592c3ffca21f551f15537eb74b9adfb509  wp3-k-production-first-boot/STATUS.txt
+4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f  wp3-k-production-first-boot/staging/HDZeroHalo_bl.bin
+ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7  wp3-k-production-first-boot/staging/arducopter.bin
+e994ed1741e77b073c2314970d3bab7364a041dc6b7451dde1028d5e17cf7c6c  wp3-k-production-first-boot/backup/SHA256SUMS.txt
+ac9c94e7b2b9d1cd3ff1846bfdf20e943424d67d8b93d014c414d79b49fc3961  wp3-k-production-first-boot/verify/SHA256SUMS.txt
+a2ab33b4d49ef762e1a542aec5d12555a7bde043301d2a92c7a587f9c960466e  wp4-a-usb-imu-attitude/WP4_A_REPORT.md
+e806f11f0e880f1f17d583404d713fe24b4b5d53ffa43d0b87aecc0041437f10  wp4-a-usb-imu-attitude/STATUS.txt
+01a13814a82737730e47ece7078fe5482557ad5ad3217dfe54e659247b520ecb  wp4-c-fc-usb-inventory/report/WP4_C_REPORT.md
+aead80e7675e57b920a4f82bc8678abe86169aada29b8800f7ddd3f23739de0e  wp4-c-fc-usb-inventory/STATUS.txt
+2c997d2354debaee546f8f679acf6eba4ef902778867d12f6c9501095190fe1d  wp4-c-fc-usb-inventory/raw/all_params.csv
+3a4c3564c5ccfc19d9e144103fd93c2f9207608ed987a1b89218bd1629e4723e  wp4-c-fc-usb-inventory/raw/inventory.json
+899e884438e37500c3621398bd1c801882846b03f7d51e25c150cc513b833a1c  wp4-c-fc-usb-inventory/compare/hwdef_vs_live.json
+dc4d081aff2b300b406041dff37163b0b478cabcd9f1ed84026d38c1e41bad7a  wp4-c-fc-usb-inventory/compare/firmware_artifacts.json
+ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7  wp3-j-production-usb-boot/after/arducopter.bin
+4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f  wp3-j-production-usb-boot/after/HDZeroHalo_bl.bin
+5d9af4f77d2fc621b31efeef5d4cffccff1895adff5dbfdca007fe7573acef62  wp3-j-production-usb-boot/after/arducopter.elf

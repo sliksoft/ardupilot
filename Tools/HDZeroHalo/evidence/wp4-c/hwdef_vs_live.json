@@ -1,0 +1,116 @@
+[
+  {
+    "item": "Board identity",
+    "measured": "STATUSTEXT HDZeroHalo; board_id=1414 (AUTOPILOT_VERSION.board_version>>16)",
+    "firmware_source": "AP_HW_HDZERO_HALO=1414 in board_types.txt; ELF string HDZeroHalo",
+    "match": "PASS"
+  },
+  {
+    "item": "Firmware version",
+    "measured": "ArduCopter V4.8.0-dev (c1a1fc2d)",
+    "firmware_source": "ELF string ArduCopter V4.8.0-dev (c1a1fc2d); WP3-K bin SHA256 ec4e56ca\u2026",
+    "match": "PASS"
+  },
+  {
+    "item": "IMU / ICM42688P",
+    "measured": "IMU0 fast sampling 2.0kHz/2.0kHz; gyro+accel healthy; temp~28.7\u00b0C",
+    "firmware_source": "hwdef: IMU Invensensev3 SPI:icm42688_1 ROTATION_ROLL_180; HAL_DEFAULT_INS_FAST_SAMPLE 1",
+    "match": "PASS (driver/rotation in firmware; product ID not exposed as param)"
+  },
+  {
+    "item": "Sensor rotation",
+    "measured": "AHRS_ORIENTATION=0.0; AccZ\u2248-1g level (FRD)",
+    "firmware_source": "hwdef ROTATION_ROLL_180 on ICM (not AHRS_ORIENTATION); AHRS_ORIENTATION should be 0",
+    "match": "PASS"
+  },
+  {
+    "item": "FRAME_CLASS",
+    "measured": 1.0,
+    "firmware_source": "DEFAULT_FRAME_CLASS 0 in Parameters.cpp (Copter); runtime must be set to 1 for Quad",
+    "match": "PASS vs user expect(1); NOTE defaults.parm does not set it \u2014 runtime value is 1"
+  },
+  {
+    "item": "FRAME_TYPE",
+    "measured": 1.0,
+    "firmware_source": "hwdef HAL_FRAME_TYPE_DEFAULT 12 (BetaFlightX); user expect 1 (X)",
+    "match": "PASS vs user expect(1); DIFFERS from hwdef default 12"
+  },
+  {
+    "item": "DShot300 outs 1-4",
+    "measured": "MOT_PWM_TYPE=5.0 (5=DShot300); STATUSTEXT RCOut DS300:1-4; SERVO1-4=Motor1-4",
+    "firmware_source": "defaults.parm MOT_PWM_TYPE 5; hwdef PWM(1..4) on TIM3 PC6-PC9",
+    "match": "PASS"
+  },
+  {
+    "item": "PWM output 5",
+    "measured": "SERVO5_FUNCTION=0.0 (0=Disabled); STATUSTEXT PWM:5; servo5_raw=0",
+    "firmware_source": "hwdef PA10 TIM1_CH3 PWM(5) GPIO(58) NODMA \u2014 LED-strip pad, no default function",
+    "match": "PASS (present as unused PWM)"
+  },
+  {
+    "item": "USB SERIAL0",
+    "measured": "SERIAL0_PROTOCOL=2.0 (2=MAVLink2) baud=115.0",
+    "firmware_source": "SERIAL_ORDER OTG1\u2026; USB VID:PID 1209:5741 observed",
+    "match": "PASS"
+  },
+  {
+    "item": "UART map",
+    "measured": {
+      "SER1": 23.0,
+      "SER2": -1.0,
+      "SER3": -1.0,
+      "SER4": 16.0,
+      "SER5": 42.0,
+      "SER6": -1.0,
+      "SER7": -1.0
+    },
+    "firmware_source": "hwdef: SER1=RCIN(23), SER2=None(-1), SER3=None, SER4=ESCTelem(16), SER5=MSP_DP(42), SER6/7=None",
+    "match": "PASS"
+  },
+  {
+    "item": "Battery monitor",
+    "measured": "BATT_MONITOR=4.0 pinV=10.0 pinI=12.0 mult=11.0 amp/V=100.0; measured ~1mV (no LiPo)",
+    "firmware_source": "hwdef HAL_BATT_MONITOR_DEFAULT 4, VOLT_PIN 10, CURR_PIN 12, SCALE 11.0 / 100.0",
+    "match": "PASS config; voltage unusable without pack"
+  },
+  {
+    "item": "Compass",
+    "measured": "ENABLE=1.0 USE=1.0 DEV_ID=0.0 PRIO1=0.0; SYS_STATUS mag unhealthy; PreArm Compass 1 not healthy",
+    "firmware_source": "hwdef AP_COMPASS_PROBING_ENABLED; no onboard mag \u2014 external I2C only",
+    "match": "PASS expected without external mag"
+  },
+  {
+    "item": "Baro",
+    "measured": "BARO_PROBE_EXT=1030.0 BARO1_DEVID=0.0; ABSOLUTE_PRESSURE not present",
+    "firmware_source": "HAL_BARO_ALLOW_INIT_NO_BARO 1; HAL_BARO_PROBE_EXT_DEFAULT 1030",
+    "match": "PASS"
+  },
+  {
+    "item": "EKF3",
+    "measured": "AHRS_EKF_TYPE=3.0 EK3_ENABLE=1.0 EK3_IMU_MASK=1.0 flags=167",
+    "firmware_source": "default EKF3 for Copter",
+    "match": "PASS"
+  },
+  {
+    "item": "Scheduler",
+    "measured": "SCHED_LOOP_RATE=400.0 Hz; SYS_STATUS load=139 (0.01%)",
+    "firmware_source": "Copter default 400 Hz typical on H7",
+    "match": "PASS"
+  },
+  {
+    "item": "Memory",
+    "measured": {
+      "brkval": 0,
+      "freemem": 65535,
+      "freemem32": 707248
+    },
+    "firmware_source": "H743 ~1MB SRAM; freemem32\u2248707KB free reported",
+    "match": "INFO"
+  },
+  {
+    "item": "Onboard logs",
+    "measured": "LOG_ENTRY num_logs=0; LOG_BACKEND_TYPE=4 (File+Block/Dataflash); LOG_DISARMED=0",
+    "firmware_source": "HAL_LOGGING_DATAFLASH_ENABLED 1; SPI2 W25Q128",
+    "match": "INFO (no logs stored yet / logging while disarmed off)"
+  }
+]

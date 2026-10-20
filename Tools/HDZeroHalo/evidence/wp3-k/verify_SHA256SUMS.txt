@@ -1,0 +1,5 @@
+postflash_fullflash.bin  56be4a3a71e4daa88ec64b248ed210ea69ac87d990ff5e6f69acf4b0c984a310
+expected_constructed     56be4a3a71e4daa88ec64b248ed210ea69ac87d990ff5e6f69acf4b0c984a310
+preflash_A.bin           884cd72eb215ca9840e5b5d08e97ee7aac38f9c358544289e79e108b86b33cef
+HDZeroHalo_bl.bin        4f92d710e21be29daed876084be9db7045e6f29ef08d290c4f9ab0253cb1d52f
+arducopter.bin           ec4e56caedb6aa58af4db0fecce7c585bb46bf5ef0859fe12bba26c5726773a7

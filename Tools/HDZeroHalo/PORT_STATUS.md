@@ -4,6 +4,78 @@ Status tags: SUPPORTED | NEEDS_CONFIG | NEEDS_DRIVER | HARDWARE_LIMITATION | UNK
 
 Nothing is **TESTED** on Halo hardware unless reproducible evidence is attached.
 
+## Hardware baseline (2026-10-21)
+
+USB/MAVLink production baseline locked. See `HARDWARE_BASELINE.md` and
+`evidence/EXTERNAL_EVIDENCE.md`. Flashed images: BL `4f92d710…`, app
+`ec4e56ca…` (`ArduCopter V4.8.0-dev (c1a1fc2d)`, board 1414).
+**HARDWARE_FLASH_ALLOWED = NO** for further flash unless re-authorized.
+
+| Feature | Status |
+| --- | --- |
+| Production BL + ArduCopter USB CDC | TESTED (WP3-K) |
+| MAVLink HEARTBEAT / Mission Planner path | TESTED (WP3-K) |
+| IMU gyro/accel + roll/pitch/level | TESTED (WP4-A) |
+| Frame QUAD/X live params | TESTED (WP4-B/C) |
+| Full 1195-param inventory | TESTED (WP4-C) |
+| DShot300 on outputs 1–4 (config) | TESTED (WP4-C STATUSTEXT) |
+| Mag / baro / RC / pack / motors spin | HARDWARE_LIMITATION (bench) |
+
+## WP4-C update (2026-10-21)
+
+Read-only full FC inventory: 1195/1195 params; `FRAME_CLASS=1` /
+`FRAME_TYPE=1`; DShot300 on 1–4; no internal error counters. See
+`WP4_C_FC_USB_INVENTORY.md` and `evidence/wp4-c/`.
+**HARDWARE_FLASH_ALLOWED = NO**.
+
+## WP4-B update (2026-10-21)
+
+Live Quad/X set after WP4-A (`FRAME_CLASS=1`, `FRAME_TYPE=1`). Verified in
+WP4-C. See `WP4_B_QUAD_X.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+
+## WP4-A update (2026-10-21)
+
+Read-only USB IMU/attitude qualification. With USB=aft reference, roll/pitch
+directions and level AccZ≈−1 g PASS; gyro/accel healthy; mag unhealthy; no
+baro; then `FRAME_CLASS=0` prearm (cleared later in WP4-B). **No flash.** See
+`WP4_A_USB_IMU_ATTITUDE.md` and `evidence/wp4-a/`.
+**HARDWARE_FLASH_ALLOWED = NO**.
+
+## WP3-K update (2026-10-21)
+
+Corrected single-session ROM-DFU flash of WP3-J production BL+app (sectors
+0–10 only; 11–15 preserved preboot). Cold USB boot: `1209:5741` product
+`HDZeroHalo` on COM14; MAVLink HEARTBEAT QUADROTOR/ArduPilot STANDBY.
+**HARDWARE_FLASH_ALLOWED = EXPIRED** after that one trial. See
+`WP3_K_PRODUCTION_FIRST_BOOT.md` and `evidence/wp3-k/`.
+
+## WP3-J update (2026-10-20)
+
+Production `HDZeroHalo` bootloader and ArduCopter rebuilt on the proven HSI64
+SYSCLK + HSI48 USB path (DiagBL WP3-I). `strlen()` fixed in production BL ELF;
+normal app jump and ECC retained; no DiagBL read-only/no-jump flags.
+Unproven 480 MHz removed. Offline builds + 29 unit tests PASS. Flashed in WP3-K.
+See `WP3_J_PRODUCTION_USB_BOOT.md`.
+
+## WP3-H update (2026-10-20)
+
+Diagnostic `HDZeroHaloDiagBL` `strlen()` self-branch repaired; STM32H743
+`RCC_RSR` is captured before clock init and shown as long PE2 pulses.
+Software-only. Production shipped Halo images unchanged. See
+`WP3_H_USB_RECOVERY.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+
+## WP3-E update (2026-10-20)
+
+WP3-E2 corrects the diagnostic image's automatic ECC erase and PE2 ownership
+defects. Its host protocol is restricted to read-only identity queries.
+Marker 4 records entry to the firmware configuration callback only. See
+`WP3_E2_DIAG_BOOTLOADER.md`; **HARDWARE_FLASH_ALLOWED = NO**.
+
+Isolated USB-only diagnostic bootloader `HDZeroHaloDiagBL` built offline
+(HSI64 SYSCLK, HSE off, USB HSI48, no application jump, PE2 LED markers).
+Not flashed. Production `HDZeroHalo` images unchanged. See
+`WP3_E_DIAG_BOOTLOADER.md`. **HARDWARE_FLASH_ALLOWED = NO**.
+
 ## WP2B-G update (2026-10-18)
 
 `HAL_BARO_ALLOW_INIT_NO_BARO 1` restored so Copter can finish init without a
@@ -85,7 +157,7 @@ Pin-level evidence from official Betaflight `HDZERO_HALO` (`e0273b956485…`) an
 | LED strip PA10 | NEEDS_CONFIG | TIM1 CH3; prefer NODMA w/ bdshot |
 | Switchable 9V PE3 | NEEDS_CONFIG | HDZ `PINIO 1 E03` |
 | USB ROM DFU | UNKNOWN | Physical BOOT procedure documented, untested; software entry disabled (WP2B-H) |
-| USB MAVLink | NEEDS_CONFIG | Separate from ROM DFU |
+| USB MAVLink | NEEDS_CONFIG | WP3-J production BL+app HSI64/HSI48 built offline; DiagBL USB enum proven (WP3-I); production HEARTBEAT untested; see `WP3_J_PRODUCTION_USB_BOOT.md` |
 | Bootloader layout | UNKNOWN | 128 vs 384 KB |
 | External GPS / mag / baro | NEEDS_CONFIG | Pads + I2C1 |
 | ArduCopter modes / failsafes | SUPPORTED | Unchanged vehicle code |

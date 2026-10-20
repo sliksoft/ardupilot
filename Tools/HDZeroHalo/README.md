@@ -58,11 +58,22 @@ development branch without touching vehicle code.
 | `WP2B_F_FINAL_REPORT.md` | WP2B-F status block |
 | `WP2B_G_NO_BARO_RESTORE.md` | HAL_BARO_ALLOW_INIT_NO_BARO for no-baro startup |
 | `WP2B_H_DFU_ENTRY.md` | Unsupported software DFU disabled; physical BOOT recovery retained |
+| `WP3_C_USB_CLOCK_FIX.md` | HSI64/HSI48 USB clock path |
+| `WP3_E_DIAG_BOOTLOADER.md` / `WP3_E2_*.md` | Isolated diagnostic bootloader |
+| `WP3_H_USB_RECOVERY.md` / `WP3_H2_RMVF_FIX.md` | `strlen` + RCC_RSR recovery |
+| `WP3_J_PRODUCTION_USB_BOOT.md` | Production BL+app rebuild (images) |
+| `WP3_K_PRODUCTION_FIRST_BOOT.md` | Hardware flash + first USB boot |
+| `WP4_A_USB_IMU_ATTITUDE.md` | USB IMU / attitude qualification |
+| `WP4_B_QUAD_X.md` | Live Quad/X frame params |
+| `WP4_C_FC_USB_INVENTORY.md` | Full 1195-param inventory |
+| `HARDWARE_BASELINE.md` | Locked USB/MAVLink baseline summary |
+| `evidence/` | Curated reports + hashes (no flash dumps) |
 
-**Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/` — **NOT VERIFIED — DO NOT FLASH**.  
-**WP2B-D:** ICM `ROTATION_ROLL_180` + MPU `ROTATION_YAW_270` in hwdef.  
-**WP2B-F:** HSE/recovery docs only; `FIRST_AP_BENCH_READINESS = NOT_READY`.  
-**WP2B-G:** `HAL_BARO_ALLOW_INIT_NO_BARO 1`; external baro probe retained; `HARDWARE_FLASH_ALLOWED = NO`.
+**Board target:** `libraries/AP_HAL_ChibiOS/hwdef/HDZeroHalo/`
+
+**Hardware USB baseline:** TESTED on WP3-K / WP4-A/B/C — see `HARDWARE_BASELINE.md`.
+Further flash / ARM / flight still require separate authorization
+(`HARDWARE_FLASH_ALLOWED = NO`).
 
 ## Outside Git (project root)
 
@@ -71,9 +82,10 @@ Path: `/home/sliksoft/VliegAI/HDZero-Halo-ArduCopter/`
 | Path | Purpose |
 | ------ | --------- |
 | `docs/` | Working notes / mirrors not required in the ArduPilot fork |
-| `evidence/` | Build logs, size reports, screenshots — keep out of Git |
+| `evidence/` | Full logs, flash dumps, staging trees — keep out of Git |
 
-Large logs and binaries under `evidence/` must not be committed.
+Large flash dumps and raw captures under the project `evidence/` tree must not
+be committed. Curated report copies live in `Tools/HDZeroHalo/evidence/`.
 
 ## Branch / base
 

@@ -1,0 +1,15 @@
+WP4-C: HDZero Halo full USB/MAVLink inventory
+MODE: READ-ONLY
+HARDWARE_FLASH_ALLOWED: NO
+RESULT: COMPLETE
+
+Port: COM14 (USB 1209:5741, ArduPilot / HDZeroHalo)
+Params: 1195/1195 received (indexed complete)
+Firmware live: ArduCopter V4.8.0-dev (c1a1fc2d) / ChibiOS 9aebaf4a
+Board: HDZeroHalo board_id=1414
+Frame live: FRAME_CLASS=1 FRAME_TYPE=1 (QUAD/X)
+Motors: MOT_PWM_TYPE=5 (DShot300); RCOut DS300:1-4 PWM:5
+IMU: healthy gyro+accel, ~28.7 C, fast 2 kHz; mag/baro/RC/batt pack absent as expected
+
+No PARAM_SET, no mutating COMMAND_LONG, no ARM/reboot/calibrate/flash.
+Stop for overleg.
