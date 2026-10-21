@@ -1,3 +1,21 @@
+# HDZero Halo — ArduCopter for Autonomous Missions
+
+**An independent ArduPilot hardware-port project by SlikSoft / Redline Dynamics.**
+
+This fork includes development work toward running **ArduCopter on the HDZero Halo STM32H743 flight controller** as a foundation for a future autonomous drone with **AI, LiDAR, obstacle avoidance and mission navigation**.
+
+**Hardware-tested milestone (21 October 2026):** the HDZero Halo port has booted ArduCopter, enumerated as USB CDC, exchanged MAVLink with Mission Planner, and passed USB-bench gyroscope, accelerometer and roll/pitch orientation checks. Quad/X and DShot300 output configuration were also verified in software. **AI, LiDAR, GPS missions, ESC/motor operation and autonomous flight have not yet been integrated or flight-tested.**
+
+> **Development / safety notice:** This is an experimental board port, **not an official ArduPilot or HDZero firmware release**, and is not flight-qualified. Do not arm or fly based on the USB-only validation results.
+
+**Halo development branch:** [`board/hdzero-halo`](https://github.com/sliksoft/ardupilot/tree/board/hdzero-halo) (the latest hardware-tested commits may not yet be pushed to GitHub).
+
+**Original project:** [ArduPilot/ardupilot](https://github.com/ArduPilot/ardupilot). All original upstream license and attribution terms remain applicable.
+
+---
+
+## Upstream ArduPilot project
+
 # ArduPilot Project
 
 [![Discord](https://img.shields.io/discord/674039678562861068.svg)](https://ardupilot.org/discord)
