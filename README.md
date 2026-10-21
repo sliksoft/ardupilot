@@ -1,8 +1,6 @@
 <p align="center">
-  <img src="Tools/HDZeroHalo/assets/redline-dynamics-logo.png" alt="Redline Dynamics" width="260">
+  <img src="Tools/HDZeroHalo/assets/redline-dynamics-banner.png" alt="Redline Dynamics — Autonomous Flight. Real Performance." width="800">
 </p>
-
-<h1 align="center">Redline Dynamics</h1>
 <p align="center"><strong>HDZero Halo · ArduCopter · Autonomous Missions</strong></p>
 
 An independent **ArduCopter port for the HDZero Halo STM32H743 flight controller**, developed as a foundation for an autonomous drone with AI-assisted missions, LiDAR and obstacle avoidance.
